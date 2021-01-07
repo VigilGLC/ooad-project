@@ -10,6 +10,7 @@ import fd.se.ooad_project.entity.usr.User;
 import fd.se.ooad_project.pojo.request.MarketReportRequest;
 import fd.se.ooad_project.repository.report.ExpertReportRepository;
 import fd.se.ooad_project.repository.report.MarketReportRepository;
+import fd.se.ooad_project.service.date.IDateService;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -31,7 +32,7 @@ public class ReportService {
 
     public List<MarketReport> getMarketReports(User market) {
         assert market.getRole() == Role.MARKET;
-        return marketReportRepository.findByMarketAndTaskAuditTaskType(market, MARKET);
+        return marketReportRepository.findByMarketAndTaskType(market, MARKET);
     }
 
     public MarketReport getMarketReportById(int id) {
@@ -50,7 +51,7 @@ public class ReportService {
         report = marketReportRepository.save(report);
 
         final AuditTask task = report.getTask();
-        final AuditTaskType taskType = task.getAuditTaskType();
+        final AuditTaskType taskType = task.getType();
         if (taskType == MARKET && taskService.tryCompleteAuditTask(task)) {
             log.info("Market Task {} complete. ", task.getId());
         }

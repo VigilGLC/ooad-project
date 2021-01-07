@@ -57,7 +57,7 @@ public class TaskService {
             expertTask.setExpert(expert);
             auditTask = expertTask;
         }
-        auditTask.setAuditTaskType(auditTaskType);
+        auditTask.setType(auditTaskType);
         auditTask.setDeadline(request.getDeadline());
         auditTask.setMarkets(markets);
         auditTask.setProductTypes(productTypes);
@@ -105,7 +105,7 @@ public class TaskService {
 
     @Transactional
     public boolean tryCompleteAuditTask(AuditTask task) {
-        if (task.getAuditTaskType() == AuditTaskType.EXPERT) {
+        if (task.getType() == AuditTaskType.EXPERT) {
             ExpertTask expertTask = expertTaskRepository.findById(task.getId());
             expertTask.setCompleted(true);
             expertTaskRepository.save(expertTask);

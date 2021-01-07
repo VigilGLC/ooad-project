@@ -1,6 +1,7 @@
 package fd.se.ooad_project.entity.report;
 
 
+import fd.se.ooad_project.entity.audit.AuditTask;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -19,5 +20,7 @@ public abstract class ReportBase {
 
     private LocalDate dateSubmit;
     private boolean submitted;
+
+    public abstract AuditTask getTask();
 
 }

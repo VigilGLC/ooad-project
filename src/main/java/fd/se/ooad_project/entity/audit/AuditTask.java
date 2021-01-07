@@ -27,7 +27,7 @@ public class AuditTask {
 
     @Enumerated(EnumType.STRING)
     @NonNull
-    private AuditTaskType auditTaskType;
+    private AuditTaskType type;
     @NonNull
     private LocalDate deadline;
 

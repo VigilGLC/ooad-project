@@ -11,5 +11,11 @@ public class Constants {
     public static final String STRING_EXPERT = "expert";
     public static final String STRING_ANY = "any";
 
+    public static final int PUNCTUAL_GRADE = 10;
+    public static final int TIMEOUT_GRADE = -10;
+    public static final int OVERLATE_GRADE = -20;
+
+    public static final int OVERLATE_DELTA = 20;
+
 
 }

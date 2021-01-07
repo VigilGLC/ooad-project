@@ -9,6 +9,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 
+import java.time.LocalDate;
 import java.util.List;
 
 import static javax.persistence.LockModeType.OPTIMISTIC_FORCE_INCREMENT;
@@ -16,7 +17,9 @@ import static javax.persistence.LockModeType.OPTIMISTIC_FORCE_INCREMENT;
 @Repository
 public interface MarketReportRepository extends CrudRepository<MarketReport, Integer> {
 
-    List<MarketReport> findByMarketAndTaskAuditTaskType(User market, AuditTaskType type);
+    List<MarketReport> findByMarketAndTaskType(User market, AuditTaskType type);
+
+    List<MarketReport> findByTaskTypeAndDateSubmit(AuditTaskType type, LocalDate date);
 
     MarketReport findById(int id);
 
