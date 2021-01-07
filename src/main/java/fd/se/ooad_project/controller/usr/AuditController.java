@@ -4,6 +4,7 @@ package fd.se.ooad_project.controller.usr;
 import fd.se.ooad_project.entity.audit.AuditTask;
 import fd.se.ooad_project.entity.audit.ProductType;
 import fd.se.ooad_project.entity.consts.Role;
+import fd.se.ooad_project.entity.usr.User;
 import fd.se.ooad_project.interceptor.Subject;
 import fd.se.ooad_project.interceptor.authorize.Authorized;
 import fd.se.ooad_project.pojo.request.AuditTaskInitiateRequest;
@@ -119,6 +120,19 @@ public class AuditController {
                     getNumberOfUnqualifiedFromEntriesInTask(productType, task));
         } else {
             log.warn("Audit {} get something not exists of product type {} in task {}. ", subject, typeName, id);
+            return ResponseEntity.badRequest().build();
+        }
+    }
+
+    @GetMapping("/user/gradeRecords")
+    public ResponseEntity<?> gradeRecordsForUser(
+            @RequestParam String name) {
+        final User user = userService.getUser(name);
+        if (user != null) {
+            log.info("Audit {} get grade records for user {}. ", subject, name);
+            return ResponseEntity.ok(user.getGradeRecords());
+        } else {
+            log.warn("Audit {} get user {} not exists. ", subject, name);
             return ResponseEntity.badRequest().build();
         }
     }
