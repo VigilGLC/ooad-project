@@ -2,7 +2,6 @@ package fd.se.ooad_project.controller.usr;
 
 
 import fd.se.ooad_project.entity.consts.Role;
-import fd.se.ooad_project.entity.usr.User;
 import fd.se.ooad_project.interceptor.Subject;
 import fd.se.ooad_project.interceptor.authorize.Authorized;
 import fd.se.ooad_project.pojo.request.MarketReportRequest;
@@ -24,27 +23,24 @@ public class MarketController {
 
     @GetMapping("/marketReports")
     public ResponseEntity<?> allMarketReports() {
-        final User currUser = subject.getUser();
-        log.info("Market {} get all market reports. ", currUser.getName());
-        return ResponseEntity.ok(reportService.getMarketReports(currUser));
+        log.info("Market {} get all market reports. ", subject);
+        return ResponseEntity.ok(reportService.getMarketReports(subject.getUser()));
     }
 
     @GetMapping("/marketReport")
     public ResponseEntity<?> marketReport(@RequestParam int id) {
-        final User currUser = subject.getUser();
-        log.info("Market {} get market report {}. ", currUser.getName(), id);
+        log.info("Market {} get market report {}. ", subject, id);
         return ResponseEntity.ok(reportService.getMarketReportById(id));
     }
 
     @PostMapping("/marketReport/submit")
     public ResponseEntity<?> submitMarketReport(@RequestBody MarketReportRequest request) {
-        final User currUser = subject.getUser();
         final boolean result = reportService.submitMarketReportFromRequest(request);
         if (result) {
-            log.info("Market {} submit market report {}. Success. ", currUser.getName(), request.getId());
+            log.info("Market {} submit market report {}. Success. ", subject, request.getId());
             return ResponseEntity.ok().build();
         } else {
-            log.warn("Market {} submit market report {}. Failed. ", currUser.getName(), request.getId());
+            log.warn("Market {} submit market report {}. Failed. ", subject, request.getId());
             return ResponseEntity.badRequest().build();
         }
     }

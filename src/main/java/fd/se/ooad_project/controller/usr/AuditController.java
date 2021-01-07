@@ -33,9 +33,9 @@ public class AuditController {
         final String name = request.getName();
         final boolean created = productService.createProductType(name);
         if (created) {
-            log.info("Audit {} add product type {} Success. ", subject, name);
+            log.info("Audit {} add product type {}. Success. ", subject, name);
         }else {
-            log.info("Audit {} add product type {} Failed. ", subject, name);
+            log.info("Audit {} add product type {}. Failed. ", subject, name);
         }
         return ResponseEntity.ok().build();
     }
@@ -45,10 +45,12 @@ public class AuditController {
     public ResponseEntity<?> initiateAuditTask(@RequestBody AuditTaskInitiateRequest request) {
         final AuditTask auditTask = taskService.createAuditTask(request);
         if (auditTask != null) {
-            log.info("Audit {} create Audit Task {}. ", subject, auditTask.getId());
+            log.info("Audit {} create audit task {}. Success. ", subject, auditTask.getId());
             return ResponseEntity.ok().build();
+        }else {
+            log.warn("Audit {} create audit task. Failed. ", subject);
+            return ResponseEntity.badRequest().build();
         }
-        return ResponseEntity.badRequest().build();
     }
 
 

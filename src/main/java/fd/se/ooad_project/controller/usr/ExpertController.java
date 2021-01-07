@@ -2,7 +2,6 @@ package fd.se.ooad_project.controller.usr;
 
 
 import fd.se.ooad_project.entity.consts.Role;
-import fd.se.ooad_project.entity.usr.User;
 import fd.se.ooad_project.interceptor.Subject;
 import fd.se.ooad_project.interceptor.authorize.Authorized;
 import fd.se.ooad_project.pojo.request.MarketReportRequest;
@@ -25,55 +24,49 @@ public class ExpertController {
 
     @GetMapping("/expertReports")
     public ResponseEntity<?> allExpertReports() {
-        final User currUser = subject.getUser();
-        log.info("Expert {} get all expert reports. ", currUser.getName());
-        return ResponseEntity.ok(reportService.getExpertReports(currUser));
+        log.info("Expert {} get all expert reports. ", subject);
+        return ResponseEntity.ok(reportService.getExpertReports(subject.getUser()));
     }
 
     @GetMapping("/expertReport")
     public ResponseEntity<?> expertReport(@RequestParam int id) {
-        final User currUser = subject.getUser();
-        log.info("Expert {} get expert report {}. ", currUser.getName(), id);
+        log.info("Expert {} get expert report {}. ", subject, id);
         return ResponseEntity.ok(reportService.getExpertReportById(id));
     }
 
     @PostMapping("/expertReport/submit")
     public ResponseEntity<?> submitExpertReport(@RequestBody MereIdRequest request) {
-        final User currUser = subject.getUser();
         final int id = request.getId();
         final boolean result = reportService.submitExpertReportOfId(id);
         if (result) {
-            log.info("Expert {} submit expert report {}. Success. ", currUser.getName(), id);
+            log.info("Expert {} submit expert report {}. Success. ", subject, id);
             return ResponseEntity.ok().build();
         } else {
-            log.info("Expert {} submit expert report {}. Failed. ", currUser.getName(), id);
+            log.info("Expert {} submit expert report {}. Failed. ", subject, id);
             return ResponseEntity.badRequest().build();
         }
     }
 
     @GetMapping("/expertReport/marketReports")
     public ResponseEntity<?> subMarketReports(@RequestParam int id) {
-        final User currUser = subject.getUser();
-        log.info("Expert {} get all sub market reports of expert report {}. ", currUser.getName(), id);
+        log.info("Expert {} get all sub market reports of expert report {}. ", subject, id);
         return ResponseEntity.ok(reportService.getExpertReportSubMarketReports(id));
     }
 
     @GetMapping("/expertReport/marketReport")
     public ResponseEntity<?> subMarketReport(@RequestParam int id) {
-        final User currUser = subject.getUser();
-        log.info("Expert {} get sub market report {}. ", currUser.getName(), id);
+        log.info("Expert {} get sub market report {}. ", subject, id);
         return ResponseEntity.ok(reportService.getMarketReportById(id));
     }
 
     @PostMapping("/expertReport/marketReport/submit")
     public ResponseEntity<?> submitSubMarketReport(@RequestBody MarketReportRequest request) {
-        final User currUser = subject.getUser();
         final boolean result = reportService.submitMarketReportFromRequest(request);
         if (result) {
-            log.info("Expert {} submit sub market report {}. Success. ", currUser.getName(), request.getId());
+            log.info("Expert {} submit sub market report {}. Success. ", subject, request.getId());
             return ResponseEntity.ok().build();
         } else {
-            log.warn("Expert {} submit sub market report {}. Failed. ", currUser.getName(), request.getId());
+            log.warn("Expert {} submit sub market report {}. Failed. ", subject, request.getId());
             return ResponseEntity.badRequest().build();
         }
     }
