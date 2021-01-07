@@ -2,6 +2,7 @@ package fd.se.ooad_project.controller.usr;
 
 
 import fd.se.ooad_project.entity.audit.AuditTask;
+import fd.se.ooad_project.entity.audit.ProductType;
 import fd.se.ooad_project.entity.consts.Role;
 import fd.se.ooad_project.interceptor.Subject;
 import fd.se.ooad_project.interceptor.authorize.Authorized;
@@ -12,8 +13,11 @@ import fd.se.ooad_project.service.ProductService;
 import fd.se.ooad_project.service.TaskService;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.time.LocalDate;
 
 @RestController
 @RequestMapping("/user/audit")
@@ -60,5 +64,22 @@ public class AuditController {
                 completed ? "completed" : "uncompleted");
         return ResponseEntity.ok(response);
     }
+
+    @PostMapping("/productType/{typeName}/unqualified")
+    public ResponseEntity<?> unqualifiedNumberOfProduction(
+            @PathVariable(name = "typeName") String typeName,
+            @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate from,
+            @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate to) {
+        final ProductType productType = productService.getByName(typeName);
+        if (productType != null) {
+            log.info("Audit {} get unqualified number of product type {}. ", subject, typeName);
+            return ResponseEntity.ok(productService.numberOfUnqualifiedFromEntries(
+                    productType, from, to));
+        } else {
+            log.warn("Audit {} get not exist product type {}. ", subject, typeName);
+            return ResponseEntity.badRequest().build();
+        }
+    }
+
 
 }
