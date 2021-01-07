@@ -27,6 +27,7 @@ public class ReportService {
     private final ExpertReportRepository expertReportRepository;
 
     private final TaskService taskService;
+    private final IDateService dateService;
 
     public List<MarketReport> getMarketReports(User market) {
         assert market.getRole() == Role.MARKET;
@@ -45,6 +46,7 @@ public class ReportService {
         }
         request.update(report.getEntries());
         report.setSubmitted(true);
+        report.setDateSubmit(dateService.currDate());
         report = marketReportRepository.save(report);
 
         final AuditTask task = report.getTask();
@@ -72,6 +74,7 @@ public class ReportService {
             return false;
         }
         report.setSubmitted(true);
+        report.setDateSubmit(dateService.currDate());
         report = expertReportRepository.save(report);
 
         final ExpertTask task = report.getTask();
