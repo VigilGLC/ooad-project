@@ -3,14 +3,13 @@ package fd.se.ooad_project.controller;
 
 import fd.se.ooad_project.pojo.request.MereNameRequest;
 import fd.se.ooad_project.pojo.request.SignUpRequest;
+import fd.se.ooad_project.pojo.response.DateResponse;
 import fd.se.ooad_project.service.UserService;
+import fd.se.ooad_project.service.date.IDateService;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/user")
@@ -18,9 +17,8 @@ import org.springframework.web.bind.annotation.RestController;
 @Slf4j
 public class AccountController {
 
-
     private final UserService userService;
-
+    private final IDateService dateService;
 
     @PostMapping("/signUp")
     public ResponseEntity<?> signIn(@RequestBody SignUpRequest request) {
@@ -49,4 +47,8 @@ public class AccountController {
     }
 
 
+    @GetMapping("/date")
+    public ResponseEntity<?> getDate() {
+        return ResponseEntity.ok(DateResponse.of(dateService.currDate()));
+    }
 }
