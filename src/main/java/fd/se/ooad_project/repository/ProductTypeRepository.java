@@ -43,4 +43,16 @@ public interface ProductTypeRepository extends CrudRepository<ProductType, Strin
     )
     public List<ProductType> findUncompletedProductTypesInTask(AuditTask task);
 
+
+    @Query(value =
+            "select sum(entry.unqualified) " +
+                    "from MarketReport report, ProductInspectEntry entry " +
+                    "where " +
+                    "   report.task=:task " +
+                    "   and " +
+                    "   entry.type=:type " +
+                    "   and " +
+                    "   entry member of report.entries "
+    )
+    int sumUnqualifiedInTask(ProductType productType, AuditTask task);
 }

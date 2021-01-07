@@ -68,14 +68,14 @@ public class AuditController {
     }
 
     @GetMapping("/productType/unqualified")
-    public ResponseEntity<?> unqualifiedNumberOfProduction(
+    public ResponseEntity<?> unqualifiedNumberOfProductType(
             @RequestParam String typeName,
             @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate from,
             @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate to) {
         final ProductType productType = productService.getByName(typeName);
         if (productType != null) {
             log.info("Audit {} get unqualified number of product type {}. ", subject, typeName);
-            return ResponseEntity.ok(productService.numberOfUnqualifiedFromEntries(
+            return ResponseEntity.ok(productService.getNumberOfUnqualifiedFromEntries(
                     productType, from, to));
         } else {
             log.warn("Audit {} get not exist product type {}. ", subject, typeName);
@@ -103,6 +103,22 @@ public class AuditController {
             return ResponseEntity.ok(userService.getUncompletedMarketsInTask(task));
         } else {
             log.warn("Audit {} get not exist audit task {}. ", subject, id);
+            return ResponseEntity.badRequest().build();
+        }
+    }
+
+    @GetMapping("/auditTask/productType/unqualified")
+    public ResponseEntity<?> unqualifiedNumberOfProductTypeForTask(
+            @RequestParam String typeName,
+            @RequestParam int id) {
+        final ProductType productType = productService.getByName(typeName);
+        final AuditTask task = taskService.getById(id);
+        if (productType != null && task != null) {
+            log.info("Audit {} get unqualified number of product type {} in task {}. ", subject, typeName, id);
+            return ResponseEntity.ok(productService.
+                    getNumberOfUnqualifiedFromEntriesInTask(productType, task));
+        } else {
+            log.warn("Audit {} get something not exists of product type {} in task {}. ", subject, typeName, id);
             return ResponseEntity.badRequest().build();
         }
     }

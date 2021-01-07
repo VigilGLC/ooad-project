@@ -32,12 +32,16 @@ public class ProductService {
         return productTypeRepository.findByName(typeName);
     }
 
-    public int numberOfUnqualifiedFromEntries(ProductType productType, LocalDate from, LocalDate to) {
+    public int getNumberOfUnqualifiedFromEntries(ProductType productType, LocalDate from, LocalDate to) {
         return productTypeRepository.sumUnqualifiedBetween(productType, from, to);
     }
 
     public List<ProductType> getUncompletedProductTypesInTask(AuditTask task) {
         return productTypeRepository.findUncompletedProductTypesInTask(task);
+    }
+
+    public int getNumberOfUnqualifiedFromEntriesInTask(ProductType productType,AuditTask task) {
+        return productTypeRepository.sumUnqualifiedInTask(productType, task);
     }
 
 }
