@@ -1,11 +1,14 @@
 package fd.se.ooad_project.service;
 
+import fd.se.ooad_project.entity.audit.AuditTask;
 import fd.se.ooad_project.entity.consts.Role;
 import fd.se.ooad_project.entity.usr.User;
 import fd.se.ooad_project.repository.UserRepository;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 @Slf4j
@@ -31,6 +34,10 @@ public class UserService {
 
     public User getUser(String name) {
         return userRepository.findByName(name);
+    }
+
+    public List<User> getUncompletedMarketsInTask(AuditTask task) {
+        return userRepository.findUncompletedMarketsInTask(task);
     }
 
 }

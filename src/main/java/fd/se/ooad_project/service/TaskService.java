@@ -131,4 +131,14 @@ public class TaskService {
         return expertTaskRepository.findByCompleted(completed);
     }
 
+    public AuditTask getById(int id) {
+        AuditTask task = marketTaskRepository.findById(id);
+        if (task != null) {
+            return task;
+        }
+        task = expertTaskRepository.findById(id);
+        return task;
+    }
+
+
 }

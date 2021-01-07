@@ -1,6 +1,7 @@
 package fd.se.ooad_project.repository;
 
 
+import fd.se.ooad_project.entity.audit.AuditTask;
 import fd.se.ooad_project.entity.audit.ProductType;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
@@ -28,5 +29,18 @@ public interface ProductTypeRepository extends CrudRepository<ProductType, Strin
                     "   entry.dateArchived<=:to "
     )
     int sumUnqualifiedBetween(ProductType type, LocalDate from, LocalDate to);
+
+
+    @Query(value =
+            "select distinct entry.type " +
+                    "from MarketReport report, ProductInspectEntry entry " +
+                    "where " +
+                    "   report.task=:task " +
+                    "   and " +
+                    "   entry member of report.entries " +
+                    "   and " +
+                    "   entry.archived=false "
+    )
+    public List<ProductType> findUncompletedProductTypesInTask(AuditTask task);
 
 }

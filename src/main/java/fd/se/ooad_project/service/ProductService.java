@@ -1,6 +1,7 @@
 package fd.se.ooad_project.service;
 
 
+import fd.se.ooad_project.entity.audit.AuditTask;
 import fd.se.ooad_project.entity.audit.ProductType;
 import fd.se.ooad_project.repository.ProductTypeRepository;
 import lombok.AllArgsConstructor;
@@ -8,6 +9,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.util.List;
 
 @Service
 @Slf4j
@@ -32,6 +34,10 @@ public class ProductService {
 
     public int numberOfUnqualifiedFromEntries(ProductType productType, LocalDate from, LocalDate to) {
         return productTypeRepository.sumUnqualifiedBetween(productType, from, to);
+    }
+
+    public List<ProductType> getUncompletedProductTypesInTask(AuditTask task) {
+        return productTypeRepository.findUncompletedProductTypesInTask(task);
     }
 
 }
