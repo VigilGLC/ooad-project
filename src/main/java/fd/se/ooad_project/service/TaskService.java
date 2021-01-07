@@ -122,4 +122,13 @@ public class TaskService {
         }
     }
 
+
+    public List<MarketTask> getMarketTasks(boolean completed) {
+        return marketTaskRepository.findByCompleted(completed);
+    }
+
+    public List<ExpertTask> getExpertTasks(boolean completed) {
+        return expertTaskRepository.findByCompleted(completed);
+    }
+
 }

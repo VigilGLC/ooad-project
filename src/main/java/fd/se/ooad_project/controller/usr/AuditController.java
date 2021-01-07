@@ -7,15 +7,13 @@ import fd.se.ooad_project.interceptor.Subject;
 import fd.se.ooad_project.interceptor.authorize.Authorized;
 import fd.se.ooad_project.pojo.request.AuditTaskInitiateRequest;
 import fd.se.ooad_project.pojo.request.MereNameRequest;
+import fd.se.ooad_project.pojo.response.AuditTasksResponse;
 import fd.se.ooad_project.service.ProductService;
 import fd.se.ooad_project.service.TaskService;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/user/audit")
@@ -53,5 +51,14 @@ public class AuditController {
         }
     }
 
+    @PostMapping("/auditTasks")
+    public ResponseEntity<?> auditTasks(@RequestParam boolean completed) {
+        final AuditTasksResponse response = AuditTasksResponse.newResponse();
+        response.add(taskService.getMarketTasks(completed));
+        response.add(taskService.getExpertTasks(completed));
+        log.info("Audit {} get all {} audit tasks. ", subject,
+                completed ? "completed" : "uncompleted");
+        return ResponseEntity.ok(response);
+    }
 
 }
