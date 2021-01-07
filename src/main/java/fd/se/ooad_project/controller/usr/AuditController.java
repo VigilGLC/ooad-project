@@ -7,7 +7,7 @@ import fd.se.ooad_project.interceptor.Subject;
 import fd.se.ooad_project.interceptor.authorize.Authorized;
 import fd.se.ooad_project.pojo.request.AuditTaskInitiateRequest;
 import fd.se.ooad_project.pojo.request.MereNameRequest;
-import fd.se.ooad_project.service.AuditTaskService;
+import fd.se.ooad_project.service.TaskService;
 import fd.se.ooad_project.service.ProductService;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -26,7 +26,7 @@ public class AuditController {
 
     private final Subject subject;
     private final ProductService productService;
-    private final AuditTaskService auditTaskService;
+    private final TaskService taskService;
 
     @PostMapping("/productType/add")
     public ResponseEntity<?> addProductType(@RequestBody MereNameRequest request) {
@@ -43,7 +43,7 @@ public class AuditController {
 
     @PostMapping("/auditTask/initiate")
     public ResponseEntity<?> initiateAuditTask(@RequestBody AuditTaskInitiateRequest request) {
-        final AuditTask auditTask = auditTaskService.createAuditTask(request);
+        final AuditTask auditTask = taskService.createAuditTask(request);
         if (auditTask != null) {
             log.info("Audit {} create Audit Task {}. ", subject, auditTask.getId());
             return ResponseEntity.ok().build();

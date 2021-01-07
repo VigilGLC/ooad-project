@@ -23,5 +23,4 @@ public class ProductInspectEntry {
     @ManyToOne
     private ProductType type;
     private int unqualified;
-    private boolean archived;
 }

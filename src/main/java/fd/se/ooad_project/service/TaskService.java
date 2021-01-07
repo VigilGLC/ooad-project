@@ -6,7 +6,7 @@ import fd.se.ooad_project.entity.audit.MarketTask;
 import fd.se.ooad_project.entity.audit.ProductType;
 import fd.se.ooad_project.entity.consts.AuditTaskType;
 import fd.se.ooad_project.entity.consts.Role;
-import fd.se.ooad_project.entity.report.ExpertInspectReport;
+import fd.se.ooad_project.entity.report.ExpertReport;
 import fd.se.ooad_project.entity.report.MarketReport;
 import fd.se.ooad_project.entity.report.ProductInspectEntry;
 import fd.se.ooad_project.entity.usr.User;
@@ -31,7 +31,7 @@ import static fd.se.ooad_project.entity.consts.AuditTaskType.MARKET;
 @Service
 @Slf4j
 @AllArgsConstructor
-public class AuditTaskService {
+public class TaskService {
 
     private final UserRepository userRepository;
     private final ProductTypeRepository productTypeRepository;
@@ -92,9 +92,9 @@ public class AuditTaskService {
     }
 
     @SuppressWarnings("UnusedReturnValue")
-    private ExpertInspectReport createExpertReports(ExpertTask task,
-                                                    List<User> markets, List<ProductType> productTypes) {
-        ExpertInspectReport report = ExpertInspectReport.of(task);
+    private ExpertReport createExpertReports(ExpertTask task,
+                                             List<User> markets, List<ProductType> productTypes) {
+        ExpertReport report = ExpertReport.of(task);
         report = expertReportRepository.save(report);
         task = report.getTask();
         final List<MarketReport> marketReports =
@@ -102,6 +102,5 @@ public class AuditTaskService {
         report.setMarketReports(marketReports);
         return expertReportRepository.save(report);
     }
-
 
 }

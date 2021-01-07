@@ -13,14 +13,14 @@ import java.util.List;
 @Setter
 @NoArgsConstructor
 @RequiredArgsConstructor(staticName = "of")
-public class ExpertInspectReport {
+public class ExpertReport {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private int id;
 
-    private LocalDate dateReported;
-    private boolean reported;
+    private LocalDate dateSubmit;
+    private boolean submitted;
 
     @OneToMany
     private List<MarketReport> marketReports;

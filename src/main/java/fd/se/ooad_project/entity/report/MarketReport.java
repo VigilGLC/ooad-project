@@ -20,8 +20,8 @@ public class MarketReport {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private int id;
 
-    private LocalDate dateReported;
-    private boolean reported;
+    private LocalDate dateSubmit;
+    private boolean submitted;
 
     @OneToMany(cascade = CascadeType.ALL)
     private List<ProductInspectEntry> entries;
