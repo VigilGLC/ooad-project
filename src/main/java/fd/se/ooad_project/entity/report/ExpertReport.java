@@ -4,8 +4,9 @@ package fd.se.ooad_project.entity.report;
 import fd.se.ooad_project.entity.audit.ExpertTask;
 import lombok.*;
 
-import javax.persistence.*;
-import java.time.LocalDate;
+import javax.persistence.Entity;
+import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 import java.util.List;
 
 @Entity
@@ -13,14 +14,7 @@ import java.util.List;
 @Setter
 @NoArgsConstructor
 @RequiredArgsConstructor(staticName = "of")
-public class ExpertReport {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private int id;
-
-    private LocalDate dateSubmit;
-    private boolean submitted;
+public class ExpertReport extends ReportBase {
 
     @OneToMany
     private List<MarketReport> marketReports;

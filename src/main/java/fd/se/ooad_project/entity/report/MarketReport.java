@@ -5,8 +5,10 @@ import fd.se.ooad_project.entity.audit.AuditTask;
 import fd.se.ooad_project.entity.usr.User;
 import lombok.*;
 
-import javax.persistence.*;
-import java.time.LocalDate;
+import javax.persistence.CascadeType;
+import javax.persistence.Entity;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import java.util.List;
 
 @Entity
@@ -14,14 +16,7 @@ import java.util.List;
 @Setter
 @NoArgsConstructor
 @RequiredArgsConstructor(staticName = "of")
-public class MarketReport {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private int id;
-
-    private LocalDate dateSubmit;
-    private boolean submitted;
+public class MarketReport extends ReportBase {
 
     @OneToMany(cascade = CascadeType.ALL)
     private List<ProductInspectEntry> entries;
