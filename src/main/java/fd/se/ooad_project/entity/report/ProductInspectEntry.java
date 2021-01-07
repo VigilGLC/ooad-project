@@ -8,6 +8,7 @@ import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 
 import javax.persistence.*;
+import java.time.LocalDate;
 
 @Entity
 @Data
@@ -23,4 +24,7 @@ public class ProductInspectEntry {
     @ManyToOne
     private ProductType type;
     private int unqualified;
+
+    private boolean archived;
+    private LocalDate dateArchived;
 }

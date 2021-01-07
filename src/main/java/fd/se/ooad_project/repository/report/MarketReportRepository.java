@@ -56,5 +56,16 @@ public interface MarketReportRepository extends CrudRepository<MarketReport, Int
     )
     int countUnsubmittedMarketReport(int marketTaskId);
 
+    @Query(value =
+            "select count(entry) " +
+                    "from MarketReport marketReport, ProductInspectEntry entry " +
+                    "where " +
+                    "   marketReport.id=:reportId " +
+                    "   and " +
+                    "   entry member of marketReport.entries " +
+                    "   and " +
+                    "   entry.archived=false "
+    )
+    int countUnarchivedProductionInspectEntries(int reportId);
 
 }

@@ -4,6 +4,7 @@ import fd.se.ooad_project.entity.report.ProductInspectEntry;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -20,10 +21,14 @@ public class MarketReportRequest extends MereIdRequest {
     private List<ProductInspectEntrySlim> entrySlims;
 
 
-    public void update(List<ProductInspectEntry> entries) {
+    public void update(List<ProductInspectEntry> entries, LocalDate currDate) {
         final Map<String, Integer> typeMap = this.entrySlims.stream().
                 collect(Collectors.toMap(e -> e.type, e -> e.unqualified));
-        entries.forEach(entry -> entry.setUnqualified(typeMap.get(entry.getType().getName())));
+        entries.forEach(entry -> {
+            entry.setUnqualified(typeMap.get(entry.getType().getName()));
+            entry.setArchived(true);
+            entry.setDateArchived(currDate);
+        });
     }
 
 

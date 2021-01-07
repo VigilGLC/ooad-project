@@ -45,7 +45,12 @@ public class ReportService {
         if (report.isSubmitted()) {
             return false;
         }
-        request.update(report.getEntries());
+        request.update(report.getEntries(), dateService.currDate());
+        report = marketReportRepository.save(report);
+        if (0 != marketReportRepository.countUnarchivedProductionInspectEntries(report.getId())) {
+            return false;
+        }
+
         report.setSubmitted(true);
         report.setDateSubmit(dateService.currDate());
         report = marketReportRepository.save(report);
