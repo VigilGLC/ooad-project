@@ -6,4 +6,5 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface MarketTaskRepository extends CrudRepository<MarketTask, Integer> {
+    MarketTask findById(int id);
 }

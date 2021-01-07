@@ -6,7 +6,6 @@ import fd.se.ooad_project.entity.usr.User;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.NonNull;
-import lombok.RequiredArgsConstructor;
 
 import javax.persistence.*;
 import java.time.LocalDate;
@@ -22,6 +21,9 @@ public class AuditTask {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private int id;
+
+    @Version
+    private int version;
 
     @Enumerated(EnumType.STRING)
     @NonNull

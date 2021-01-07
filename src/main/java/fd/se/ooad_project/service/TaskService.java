@@ -103,4 +103,23 @@ public class TaskService {
         return expertReportRepository.save(report);
     }
 
+    @Transactional
+    public boolean tryCompleteAuditTask(AuditTask task) {
+        if (task.getAuditTaskType() == AuditTaskType.EXPERT) {
+            ExpertTask expertTask = expertTaskRepository.findById(task.getId());
+            expertTask.setCompleted(true);
+            expertTaskRepository.save(expertTask);
+            return true;
+        } else {
+            if (0 != marketReportRepository.countUnsubmittedMarketReport(task.getId())) {
+                return false;
+            } else {
+                MarketTask marketTask = marketTaskRepository.findById(task.getId());
+                marketTask.setCompleted(true);
+                marketTaskRepository.save(marketTask);
+                return true;
+            }
+        }
+    }
+
 }

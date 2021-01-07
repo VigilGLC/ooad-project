@@ -1,5 +1,8 @@
 package fd.se.ooad_project.service;
 
+import fd.se.ooad_project.entity.audit.AuditTask;
+import fd.se.ooad_project.entity.audit.ExpertTask;
+import fd.se.ooad_project.entity.consts.AuditTaskType;
 import fd.se.ooad_project.entity.consts.Role;
 import fd.se.ooad_project.entity.report.ExpertReport;
 import fd.se.ooad_project.entity.report.MarketReport;
@@ -23,6 +26,8 @@ public class ReportService {
     private final MarketReportRepository marketReportRepository;
     private final ExpertReportRepository expertReportRepository;
 
+    private final TaskService taskService;
+
     public List<MarketReport> getMarketReports(User market) {
         assert market.getRole() == Role.MARKET;
         return marketReportRepository.findByMarketAndTaskAuditTaskType(market, MARKET);
@@ -34,13 +39,19 @@ public class ReportService {
 
 
     public boolean submitMarketReportFromRequest(MarketReportRequest request) {
-        final MarketReport report = getMarketReportById(request.getId());
+        MarketReport report = getMarketReportById(request.getId());
         if (report.isSubmitted()) {
             return false;
         }
         request.update(report.getEntries());
         report.setSubmitted(true);
-        marketReportRepository.save(report);
+        report = marketReportRepository.save(report);
+
+        final AuditTask task = report.getTask();
+        final AuditTaskType taskType = task.getAuditTaskType();
+        if (taskType == MARKET && taskService.tryCompleteAuditTask(task)) {
+            log.info("Market Task {} complete. ", task.getId());
+        }
         return true;
     }
 
@@ -56,12 +67,18 @@ public class ReportService {
     }
 
     public boolean submitExpertReportOfId(int id) {
-        final ExpertReport report = getExpertReportById(id);
+        ExpertReport report = getExpertReportById(id);
         if (marketReportRepository.countUnsubmittedMarketReportsOfExpertReport(id) != 0) {
             return false;
         }
         report.setSubmitted(true);
-        expertReportRepository.save(report);
+        report = expertReportRepository.save(report);
+
+        final ExpertTask task = report.getTask();
+        if (taskService.tryCompleteAuditTask(task)) {
+            log.info("Expert Task {} complete. ", task.getId());
+        }
+
         return true;
     }
 

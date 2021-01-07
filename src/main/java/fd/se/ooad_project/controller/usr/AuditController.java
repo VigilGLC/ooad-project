@@ -7,8 +7,8 @@ import fd.se.ooad_project.interceptor.Subject;
 import fd.se.ooad_project.interceptor.authorize.Authorized;
 import fd.se.ooad_project.pojo.request.AuditTaskInitiateRequest;
 import fd.se.ooad_project.pojo.request.MereNameRequest;
-import fd.se.ooad_project.service.TaskService;
 import fd.se.ooad_project.service.ProductService;
+import fd.se.ooad_project.service.TaskService;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -34,7 +34,7 @@ public class AuditController {
         final boolean created = productService.createProductType(name);
         if (created) {
             log.info("Audit {} add product type {}. Success. ", subject, name);
-        }else {
+        } else {
             log.info("Audit {} add product type {}. Failed. ", subject, name);
         }
         return ResponseEntity.ok().build();
@@ -47,7 +47,7 @@ public class AuditController {
         if (auditTask != null) {
             log.info("Audit {} create audit task {}. Success. ", subject, auditTask.getId());
             return ResponseEntity.ok().build();
-        }else {
+        } else {
             log.warn("Audit {} create audit task. Failed. ", subject);
             return ResponseEntity.badRequest().build();
         }

@@ -7,4 +7,7 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface ExpertTaskRepository extends CrudRepository<ExpertTask,Integer> {
+
+    ExpertTask findById(int id);
+
 }
