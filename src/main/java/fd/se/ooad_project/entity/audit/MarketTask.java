@@ -11,5 +11,5 @@ import javax.persistence.Entity;
 @EqualsAndHashCode(callSuper = true)
 @Entity
 @Data
-public class MarketInspectTask extends AuditTask {
+public class MarketTask extends AuditTask {
 }

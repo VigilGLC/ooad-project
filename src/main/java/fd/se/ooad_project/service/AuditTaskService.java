@@ -1,24 +1,28 @@
 package fd.se.ooad_project.service;
 
 import fd.se.ooad_project.entity.audit.AuditTask;
-import fd.se.ooad_project.entity.audit.ExpertInspectTask;
-import fd.se.ooad_project.entity.audit.MarketInspectTask;
+import fd.se.ooad_project.entity.audit.ExpertTask;
+import fd.se.ooad_project.entity.audit.MarketTask;
 import fd.se.ooad_project.entity.audit.ProductType;
 import fd.se.ooad_project.entity.consts.AuditTaskType;
 import fd.se.ooad_project.entity.consts.Role;
-import fd.se.ooad_project.entity.report.MarketInspectReport;
-import fd.se.ooad_project.entity.report.ProductTypeInspectEntry;
+import fd.se.ooad_project.entity.report.ExpertInspectReport;
+import fd.se.ooad_project.entity.report.MarketReport;
+import fd.se.ooad_project.entity.report.ProductInspectEntry;
 import fd.se.ooad_project.entity.usr.User;
 import fd.se.ooad_project.pojo.request.AuditTaskInitiateRequest;
-import fd.se.ooad_project.repository.MarketInspectReportRepository;
-import fd.se.ooad_project.repository.MarketInspectTaskRepository;
 import fd.se.ooad_project.repository.ProductTypeRepository;
 import fd.se.ooad_project.repository.UserRepository;
+import fd.se.ooad_project.repository.audittask.ExpertTaskRepository;
+import fd.se.ooad_project.repository.audittask.MarketTaskRepository;
+import fd.se.ooad_project.repository.report.ExpertReportRepository;
+import fd.se.ooad_project.repository.report.MarketReportRepository;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDate;
+import javax.transaction.Transactional;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -32,9 +36,13 @@ public class AuditTaskService {
     private final UserRepository userRepository;
     private final ProductTypeRepository productTypeRepository;
 
-    private final MarketInspectTaskRepository marketInspectTaskRepository;
-    private final MarketInspectReportRepository marketInspectReportRepository;
+    private final MarketTaskRepository marketTaskRepository;
+    private final ExpertTaskRepository expertTaskRepository;
 
+    private final MarketReportRepository marketReportRepository;
+    private final ExpertReportRepository expertReportRepository;
+
+    @Transactional
     public AuditTask createAuditTask(AuditTaskInitiateRequest request) {
         final AuditTaskType auditTaskType = request.getAuditTaskType();
         final List<User> markets = userRepository.findByRoleAndNameIn(Role.MARKET, request.getMarkets());
@@ -42,50 +50,57 @@ public class AuditTaskService {
 
         AuditTask auditTask;
         if (auditTaskType == MARKET) {
-            auditTask = new MarketInspectTask();
+            auditTask = new MarketTask();
         } else {
-            final ExpertInspectTask expertInspectTask = new ExpertInspectTask();
+            final ExpertTask expertTask = new ExpertTask();
             final User expert = userRepository.findByName(request.getExpert());
-            expertInspectTask.setExpert(expert);
-            auditTask = expertInspectTask;
+            expertTask.setExpert(expert);
+            auditTask = expertTask;
         }
         auditTask.setAuditTaskType(auditTaskType);
         auditTask.setDeadline(request.getDeadline());
-
-
         auditTask.setMarkets(markets);
         auditTask.setProductTypes(productTypes);
 
-        auditTask = auditTaskRepository.save(auditTask);
-
 
         if (auditTaskType == MARKET) {
-
+            final MarketTask marketTask = (MarketTask) auditTask;
+            auditTask = marketTaskRepository.save(marketTask);
+            createMarketReports(marketTask, markets, productTypes);
+        } else {
+            final ExpertTask expertTask = (ExpertTask) auditTask;
+            auditTask = expertTaskRepository.save(expertTask);
+            createExpertReports(expertTask, markets, productTypes);
         }
-
-
         return auditTask;
     }
 
-    private MarketInspectTask createMarketInspectTask(LocalDate deadline) {
-        final MarketInspectTask task = new MarketInspectTask();
-        task.setAuditTaskType(MARKET);
-        task.setDeadline(deadline);
-        return task;
-    }
 
-    private void createMarketInspectReports(MarketInspectTask task,
-                                            List<User> markets, List<ProductType> productTypes) {
-        final List<ProductTypeInspectEntry> entries =
-                productTypes.stream().map(ProductTypeInspectEntry::of).
+    private List<MarketReport> createMarketReports(AuditTask task,
+                                                   List<User> markets, List<ProductType> productTypes) {
+        final List<ProductInspectEntry> entries =
+                productTypes.stream().map(ProductInspectEntry::of).
                         collect(Collectors.toList());
+        final ArrayList<MarketReport> retList = new ArrayList<>(markets.size());
         for (User market : markets) {
-            final MarketInspectReport report = new MarketInspectReport();
+            final MarketReport report = MarketReport.of(task);
             report.setMarket(market);
             report.setEntries(entries);
-            report.setTask(task);
-            marketInspectReportRepository.save(report);
+            retList.add(marketReportRepository.save(report));
         }
+        return retList;
+    }
+
+    @SuppressWarnings("UnusedReturnValue")
+    private ExpertInspectReport createExpertReports(ExpertTask task,
+                                                    List<User> markets, List<ProductType> productTypes) {
+        ExpertInspectReport report = ExpertInspectReport.of(task);
+        report = expertReportRepository.save(report);
+        task = report.getTask();
+        final List<MarketReport> marketReports =
+                createMarketReports(task, markets, productTypes);
+        report.setMarketReports(marketReports);
+        return expertReportRepository.save(report);
     }
 
 

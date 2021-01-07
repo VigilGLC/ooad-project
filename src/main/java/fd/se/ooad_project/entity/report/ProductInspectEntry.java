@@ -13,7 +13,7 @@ import javax.persistence.*;
 @Data
 @NoArgsConstructor
 @RequiredArgsConstructor(staticName = "of")
-public class ProductTypeInspectEntry {
+public class ProductInspectEntry {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)

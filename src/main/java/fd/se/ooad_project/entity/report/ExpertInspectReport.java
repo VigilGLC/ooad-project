@@ -1,9 +1,8 @@
 package fd.se.ooad_project.entity.report;
 
 
-import fd.se.ooad_project.entity.audit.ExpertInspectTask;
-import lombok.Getter;
-import lombok.Setter;
+import fd.se.ooad_project.entity.audit.ExpertTask;
+import lombok.*;
 
 import javax.persistence.*;
 import java.time.LocalDate;
@@ -12,6 +11,8 @@ import java.util.List;
 @Entity
 @Getter
 @Setter
+@NoArgsConstructor
+@RequiredArgsConstructor(staticName = "of")
 public class ExpertInspectReport {
 
     @Id
@@ -22,8 +23,10 @@ public class ExpertInspectReport {
     private boolean reported;
 
     @OneToMany
-    private List<MarketInspectReport> marketReports;
+    private List<MarketReport> marketReports;
+
+    @NonNull
     @OneToOne
-    private ExpertInspectTask task;
+    private ExpertTask task;
 
 }

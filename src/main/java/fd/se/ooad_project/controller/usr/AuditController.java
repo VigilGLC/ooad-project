@@ -33,7 +33,9 @@ public class AuditController {
         final String name = request.getName();
         final boolean created = productService.createProductType(name);
         if (created) {
-            log.info("Audit {} add product type {}. ", subject, name);
+            log.info("Audit {} add product type {} Success. ", subject, name);
+        }else {
+            log.info("Audit {} add product type {} Failed. ", subject, name);
         }
         return ResponseEntity.ok().build();
     }
