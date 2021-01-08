@@ -26,4 +26,7 @@ public interface UserRepository extends CrudRepository<User, String> {
                     "   report.submitted=false "
     )
     public List<User> findUncompletedMarketsInTask(AuditTask task);
+
+    public List<User> findByRole(Role role);
+
 }

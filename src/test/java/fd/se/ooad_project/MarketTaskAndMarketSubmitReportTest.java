@@ -35,7 +35,7 @@ import static org.junit.runners.MethodSorters.NAME_ASCENDING;
 @AutoConfigureTestDatabase
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
 @FixMethodOrder(NAME_ASCENDING)
-class AuditInitiateTaskAndMarketSubmitReportTest {
+class MarketTaskAndMarketSubmitReportTest {
 
     @Autowired
     private TaskService taskService;

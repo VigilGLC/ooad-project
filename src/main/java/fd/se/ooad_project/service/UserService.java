@@ -40,4 +40,9 @@ public class UserService {
         return userRepository.findUncompletedMarketsInTask(task);
     }
 
+    public List<User> getUsers(Role role) {
+        return userRepository.findByRole(role);
+    }
+
+
 }

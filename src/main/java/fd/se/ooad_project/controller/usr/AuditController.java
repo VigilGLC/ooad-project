@@ -20,6 +20,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
+import java.util.List;
 
 @RestController
 @RequestMapping("/user/audit")
@@ -135,6 +136,13 @@ public class AuditController {
             log.warn("Audit {} get user {} not exists. ", subject, name);
             return ResponseEntity.badRequest().build();
         }
+    }
+
+    @GetMapping("/users/expert")
+    public ResponseEntity<?> allExperts() {
+        final List<User> experts = userService.getUsers(Role.EXPERT);
+        log.info("Audit {} get all experts. ", subject);
+        return ResponseEntity.ok(experts);
     }
 
 
