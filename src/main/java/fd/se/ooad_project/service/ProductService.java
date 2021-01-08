@@ -4,6 +4,7 @@ package fd.se.ooad_project.service;
 import fd.se.ooad_project.entity.audit.AuditTask;
 import fd.se.ooad_project.entity.audit.ProductType;
 import fd.se.ooad_project.repository.ProductTypeRepository;
+import fd.se.ooad_project.repository.report.ProductInspectEntryRepository;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -17,7 +18,7 @@ import java.util.List;
 public class ProductService {
 
     private final ProductTypeRepository productTypeRepository;
-
+    private final ProductInspectEntryRepository entryRepository;
 
     public boolean createProductType(String name) {
         if (null == productTypeRepository.findByName(name)) {
@@ -33,15 +34,15 @@ public class ProductService {
     }
 
     public int getNumberOfUnqualifiedFromEntries(ProductType productType, LocalDate from, LocalDate to) {
-        return productTypeRepository.sumUnqualifiedBetween(productType, from, to);
+        return entryRepository.sumUnqualifiedBetween(productType, from, to);
     }
 
     public List<ProductType> getUncompletedProductTypesInTask(AuditTask task) {
         return productTypeRepository.findUncompletedProductTypesInTask(task);
     }
 
-    public int getNumberOfUnqualifiedFromEntriesInTask(ProductType productType,AuditTask task) {
-        return productTypeRepository.sumUnqualifiedInTask(productType, task);
+    public int getNumberOfUnqualifiedFromEntriesInTask(ProductType productType, AuditTask task) {
+        return entryRepository.sumUnqualifiedInTask(productType, task);
     }
 
 }

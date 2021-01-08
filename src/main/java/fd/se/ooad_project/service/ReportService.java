@@ -10,6 +10,7 @@ import fd.se.ooad_project.entity.usr.User;
 import fd.se.ooad_project.pojo.request.MarketReportRequest;
 import fd.se.ooad_project.repository.report.ExpertReportRepository;
 import fd.se.ooad_project.repository.report.MarketReportRepository;
+import fd.se.ooad_project.repository.report.ProductInspectEntryRepository;
 import fd.se.ooad_project.service.date.IDateService;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -26,6 +27,8 @@ public class ReportService {
 
     private final MarketReportRepository marketReportRepository;
     private final ExpertReportRepository expertReportRepository;
+
+    private final ProductInspectEntryRepository entryRepository;
 
     private final TaskService taskService;
     private final IDateService dateService;
@@ -47,7 +50,7 @@ public class ReportService {
         }
         request.update(report.getEntries(), dateService.currDate());
         report = marketReportRepository.save(report);
-        if (0 != marketReportRepository.countUnarchivedProductionInspectEntries(report.getId())) {
+        if (0 != entryRepository.countByReportIdAndArchivedFalse(report.getId())) {
             return false;
         }
 

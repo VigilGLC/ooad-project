@@ -7,7 +7,6 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 
-import java.time.LocalDate;
 import java.util.List;
 
 @Repository
@@ -19,40 +18,17 @@ public interface ProductTypeRepository extends CrudRepository<ProductType, Strin
 
 
     @Query(value =
-            "select sum(entry.unqualified) " +
-                    "from ProductInspectEntry entry " +
-                    "where " +
-                    "   entry.type=:type " +
-                    "   and" +
-                    "   entry.dateArchived>=:from " +
-                    "   and " +
-                    "   entry.dateArchived<=:to "
-    )
-    int sumUnqualifiedBetween(ProductType type, LocalDate from, LocalDate to);
-
-
-    @Query(value =
             "select distinct entry.type " +
                     "from MarketReport report, ProductInspectEntry entry " +
                     "where " +
                     "   report.task=:task " +
                     "   and " +
-                    "   entry member of report.entries " +
+                    "   entry.report=report " +
                     "   and " +
                     "   entry.archived=false "
     )
     List<ProductType> findUncompletedProductTypesInTask(AuditTask task);
 
 
-    @Query(value =
-            "select sum(entry.unqualified) " +
-                    "from MarketReport report, ProductInspectEntry entry " +
-                    "where " +
-                    "   report.task=:task " +
-                    "   and " +
-                    "   entry.type=:type " +
-                    "   and " +
-                    "   entry member of report.entries "
-    )
-    int sumUnqualifiedInTask(ProductType type, AuditTask task);
+
 }

@@ -66,10 +66,10 @@ public class TaskService {
         if (auditTaskType == MARKET) {
             final MarketTask marketTask = (MarketTask) auditTask;
             auditTask = marketTaskRepository.save(marketTask);
-            createMarketReports(marketTask, markets, productTypes);
+            createMarketReports(auditTask, markets, productTypes);
         } else {
-            final ExpertTask expertTask = (ExpertTask) auditTask;
-            auditTask = expertTaskRepository.save(expertTask);
+            ExpertTask expertTask = (ExpertTask) auditTask;
+            expertTask = expertTaskRepository.save(expertTask);
             createExpertReports(expertTask, markets, productTypes);
         }
         return auditTask;
@@ -86,6 +86,7 @@ public class TaskService {
             final MarketReport report = MarketReport.of(task);
             report.setMarket(market);
             report.setEntries(entries);
+            entries.forEach(e -> e.setReport(report));
             retList.add(marketReportRepository.save(report));
         }
         return retList;

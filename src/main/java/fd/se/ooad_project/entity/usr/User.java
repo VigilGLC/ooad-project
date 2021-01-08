@@ -17,7 +17,6 @@ import java.util.List;
 public class User {
     @NonNull
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
     private String name;
 
     @Enumerated(EnumType.STRING)

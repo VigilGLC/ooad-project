@@ -27,4 +27,7 @@ public class ProductInspectEntry {
 
     private boolean archived;
     private LocalDate dateArchived;
+
+    @ManyToOne
+    private MarketReport report;
 }
