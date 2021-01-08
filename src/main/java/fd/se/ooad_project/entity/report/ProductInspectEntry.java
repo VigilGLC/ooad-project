@@ -21,7 +21,7 @@ public class ProductInspectEntry {
     private int id;
 
     @NonNull
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.EAGER)
     private ProductType type;
     private int unqualified;
 

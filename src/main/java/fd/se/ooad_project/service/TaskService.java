@@ -83,11 +83,12 @@ public class TaskService {
                         collect(Collectors.toList());
         final ArrayList<MarketReport> retList = new ArrayList<>(markets.size());
         for (User market : markets) {
-            final MarketReport report = MarketReport.of(task);
+            MarketReport report = MarketReport.of(task);
             report.setMarket(market);
-            report.setEntries(entries);
-            entries.forEach(e -> e.setReport(report));
-            retList.add(marketReportRepository.save(report));
+            final MarketReport finalReport = marketReportRepository.save(report);
+            finalReport.getEntries().addAll(entries);
+            entries.forEach(e -> e.setReport(finalReport));
+            retList.add(marketReportRepository.save(finalReport));
         }
         return retList;
     }

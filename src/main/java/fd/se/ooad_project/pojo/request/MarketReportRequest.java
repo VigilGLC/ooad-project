@@ -1,6 +1,7 @@
 package fd.se.ooad_project.pojo.request;
 
 import fd.se.ooad_project.entity.report.ProductInspectEntry;
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
@@ -13,6 +14,8 @@ import java.util.stream.Collectors;
 @Data
 public class MarketReportRequest extends MereIdRequest {
 
+    @Data
+    @AllArgsConstructor(staticName = "of")
     public static class ProductInspectEntrySlim {
         private String type;
         private int unqualified;

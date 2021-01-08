@@ -5,10 +5,8 @@ import fd.se.ooad_project.entity.audit.AuditTask;
 import fd.se.ooad_project.entity.usr.User;
 import lombok.*;
 
-import javax.persistence.CascadeType;
-import javax.persistence.Entity;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
+import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -18,8 +16,8 @@ import java.util.List;
 @RequiredArgsConstructor(staticName = "of")
 public class MarketReport extends ReportBase {
 
-    @OneToMany(cascade = CascadeType.ALL)
-    private List<ProductInspectEntry> entries;
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    private List<ProductInspectEntry> entries = new ArrayList<>();
 
     @ManyToOne
     private User market;
