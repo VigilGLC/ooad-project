@@ -1,6 +1,7 @@
 package fd.se.ooad_project.entity.report;
 
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import fd.se.ooad_project.entity.audit.ExpertTask;
 import lombok.*;
 
@@ -17,6 +18,7 @@ import java.util.List;
 @RequiredArgsConstructor(staticName = "of")
 public class ExpertReport extends ReportBase {
 
+    @JsonIgnore
     @OneToMany
     private List<MarketReport> marketReports = new ArrayList<>();
 

@@ -19,6 +19,7 @@ import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.transaction.Transactional;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -40,10 +41,11 @@ public class AuditController {
         final boolean created = productService.createProductType(name);
         if (created) {
             log.info("Audit {} add product type {}. Success. ", subject, name);
+            return ResponseEntity.ok().build();
         } else {
             log.info("Audit {} add product type {}. Failed. ", subject, name);
+            return ResponseEntity.badRequest().build();
         }
-        return ResponseEntity.ok().build();
     }
 
 
@@ -125,6 +127,7 @@ public class AuditController {
         }
     }
 
+    @Transactional
     @GetMapping("/user/gradeRecords")
     public ResponseEntity<?> gradeRecordsForUser(
             @RequestParam String name) {

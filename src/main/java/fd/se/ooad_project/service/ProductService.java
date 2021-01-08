@@ -33,6 +33,10 @@ public class ProductService {
         return productTypeRepository.findByName(typeName);
     }
 
+    public List<ProductType> getAll(){
+        return productTypeRepository.findAll();
+    }
+
     public int getNumberOfUnqualifiedFromEntries(ProductType productType, LocalDate from, LocalDate to) {
         return entryRepository.sumUnqualifiedBetween(productType, from, to);
     }

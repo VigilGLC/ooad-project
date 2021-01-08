@@ -1,6 +1,7 @@
 package fd.se.ooad_project.entity.report;
 
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import fd.se.ooad_project.entity.audit.ProductType;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -29,6 +30,7 @@ public class ProductInspectEntry {
     private boolean archived;
     private LocalDate dateArchived;
 
+    @JsonIgnore
     @ManyToOne
     private MarketReport report;
 }

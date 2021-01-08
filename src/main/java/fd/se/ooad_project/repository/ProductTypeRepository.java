@@ -16,6 +16,7 @@ public interface ProductTypeRepository extends CrudRepository<ProductType, Strin
 
     List<ProductType> findByNameIn(List<String> names);
 
+    List<ProductType> findAll();
 
     @Query(value =
             "select distinct entry.type " +
@@ -28,7 +29,6 @@ public interface ProductTypeRepository extends CrudRepository<ProductType, Strin
                     "   entry.archived=false "
     )
     List<ProductType> findUncompletedProductTypesInTask(AuditTask task);
-
 
 
 }

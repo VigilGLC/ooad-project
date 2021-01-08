@@ -4,6 +4,7 @@ package fd.se.ooad_project.controller;
 import fd.se.ooad_project.pojo.request.MereNameRequest;
 import fd.se.ooad_project.pojo.request.SignUpRequest;
 import fd.se.ooad_project.pojo.response.DateResponse;
+import fd.se.ooad_project.service.ProductService;
 import fd.se.ooad_project.service.UserService;
 import fd.se.ooad_project.service.date.IDateService;
 import lombok.AllArgsConstructor;
@@ -17,6 +18,7 @@ import org.springframework.web.bind.annotation.*;
 @Slf4j
 public class AccountController {
 
+    private final ProductService productService;
     private final UserService userService;
     private final IDateService dateService;
 
@@ -50,5 +52,10 @@ public class AccountController {
     @GetMapping("/date")
     public ResponseEntity<?> getDate() {
         return ResponseEntity.ok(DateResponse.of(dateService.currDate()));
+    }
+
+    @GetMapping("/productTypes")
+    public ResponseEntity<?> allProductTypes() {
+        return ResponseEntity.ok(productService.getAll());
     }
 }
