@@ -1,6 +1,7 @@
 package fd.se.ooad_project.entity.usr;
 
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import fd.se.ooad_project.entity.consts.Role;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -8,6 +9,7 @@ import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 
 import javax.persistence.*;
+import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -24,6 +26,7 @@ public class User {
     @NonNull
     private Role role;
 
+    @JsonIgnore
     @OneToMany(cascade = CascadeType.ALL)
-    private List<GradeRecord> gradeRecords;
+    private List<GradeRecord> gradeRecords = new ArrayList<>();
 }

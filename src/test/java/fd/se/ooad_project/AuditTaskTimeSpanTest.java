@@ -2,10 +2,15 @@ package fd.se.ooad_project;
 
 
 import fd.se.ooad_project.entity.audit.AuditTask;
+import fd.se.ooad_project.entity.audit.ExpertTask;
 import fd.se.ooad_project.entity.audit.ProductType;
 import fd.se.ooad_project.entity.consts.AuditTaskType;
+import fd.se.ooad_project.entity.consts.Performance;
 import fd.se.ooad_project.entity.consts.Role;
+import fd.se.ooad_project.entity.report.ExpertReport;
 import fd.se.ooad_project.entity.report.MarketReport;
+import fd.se.ooad_project.entity.usr.GradeRecord;
+import fd.se.ooad_project.entity.usr.User;
 import fd.se.ooad_project.pojo.request.AuditTaskInitiateRequest;
 import fd.se.ooad_project.pojo.request.MarketReportRequest;
 import fd.se.ooad_project.repository.report.MarketReportRepository;
@@ -19,8 +24,12 @@ import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabas
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.annotation.DirtiesContext;
 
+import javax.transaction.Transactional;
 import java.time.LocalDate;
-import java.util.*;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @AutoConfigureTestDatabase
@@ -60,6 +69,7 @@ public class AuditTaskTimeSpanTest {
         userService.createUser(auditName, Role.AUDIT);
     }
 
+    @Transactional
     @Test
     void testUnqualified() {
         MockDateService dateService = (MockDateService) this.dateService;
@@ -74,6 +84,7 @@ public class AuditTaskTimeSpanTest {
                 mapForExpertSubMarketReport("expert",
                         Arrays.asList("A", "C"), Arrays.asList("1", "3"),
                         deadlineForExpertTask);
+
 
         LocalDate dayBegin = dateService.currDate();
         /* day0
@@ -98,7 +109,7 @@ public class AuditTaskTimeSpanTest {
         /* day2
          */
         dateService.skipDate(1);
-        /* day0
+        /* day3
            market B: 1,9
         */
         dateService.skipDate(1);
@@ -111,12 +122,214 @@ public class AuditTaskTimeSpanTest {
         submitForReport(mapForExpert.get("A"), "3", 25);
         /* day5
          */
-        reportService.submitExpertReportOfId(
-                reportService.getExpertReports(userService.getUser("expert")).get(0).getId());
+        dateService.skipDate(1);
+        final ExpertReport expertReport =
+                reportService.getExpertReports(userService.getUser("expert")).get(0);
+        reportService.submitExpertReportOfId(expertReport.getId());
 
-
+        Assertions.assertEquals(31,
+                numberOfUnqualified("1", dayBegin, dayBegin.plusDays(2)));
+        Assertions.assertEquals(12,
+                numberOfUnqualified("2", dayBegin, dayBegin.plusDays(1)));
+        Assertions.assertEquals(5,
+                numberOfUnqualified("3", dayBegin, dayBegin.plusDays(3)));
         Assertions.assertEquals(25,
-                numberOfUnqualified("A", dayBegin,dayBegin.plusDays(2)));
+                numberOfUnqualified("3", dayBegin.plusDays(3), dayBegin.plusDays(6)));
+    }
+
+
+    @Transactional
+    @Test
+    void testMarketPunctual() {
+        MockDateService dateService = (MockDateService) this.dateService;
+        LocalDate deadline = dateService.currDate().plusDays(1);
+
+        final HashMap<String, MarketReport> mapForMarket =
+                mapForMarketReport(Arrays.asList("A", "B"),
+                        Collections.singletonList("1"), deadline);
+
+
+        LocalDate dayBegin = dateService.currDate();
+        /* day0
+           market A: 1,5
+        */
+        dateService.skipDate(0);
+        submitForReport(mapForMarket.get("A"), "1", 20);
+        final AuditTask task = mapForMarket.get("A").getTask();
+        final List<ProductType> typeList = productService.getUncompletedProductTypesInTask(task);
+        Assertions.assertEquals(1, typeList.size());
+        Assertions.assertEquals(0,
+                userService.getUser("A").getGradeRecords().size());
+        /* day1
+           market B: 1,3
+        */
+        dateService.skipDate(1);
+        submitForReport(mapForMarket.get("B"), "1", 3);
+        Assertions.assertEquals(1,
+                userService.getUser("A").getGradeRecords().size());
+        /* day2
+         */
+        dateService.skipDate(1);
+        final List<GradeRecord> aRecords = userService.getUser("A").getGradeRecords();
+        final List<GradeRecord> bRecords = userService.getUser("B").getGradeRecords();
+        Assertions.assertEquals(1, aRecords.size());
+        Assertions.assertEquals(1, bRecords.size());
+        Assertions.assertEquals(Performance.PUNCTUAL.grading, aRecords.get(0).getGrading());
+        Assertions.assertEquals(Performance.PUNCTUAL.grading, bRecords.get(0).getGrading());
+    }
+
+    @Transactional
+    @Test
+    void testMarketTimeout() {
+        MockDateService dateService = (MockDateService) this.dateService;
+        LocalDate deadline = dateService.currDate().plusDays(1);
+
+        final HashMap<String, MarketReport> mapForMarket =
+                mapForMarketReport(Arrays.asList("A", "B", "C"),
+                        Collections.singletonList("1"), deadline);
+
+
+        LocalDate dayBegin = dateService.currDate();
+        /* day0
+         */
+        dateService.skipDate(0);
+        /* day1
+         */
+        dateService.skipDate(1);
+        submitForReport(mapForMarket.get("A"), "1", 20);
+        /* day2
+         */
+        dateService.skipDate(1);
+        submitForReport(mapForMarket.get("B"), "1", 21);
+        /*day3-19
+         */
+        for (int day = 3; day <= 19; day++) {
+            dateService.skipDate(1);
+        }
+        /* day20
+         */
+        dateService.skipDate(1);
+        submitForReport(mapForMarket.get("C"), "1", 22);
+        /* day21
+         */
+        dateService.skipDate(1);
+
+        final List<GradeRecord> aRecords = userService.getUser("A").getGradeRecords();
+        final List<GradeRecord> bRecords = userService.getUser("B").getGradeRecords();
+        final List<GradeRecord> cRecords = userService.getUser("C").getGradeRecords();
+
+        Assertions.assertEquals(1, aRecords.size());
+        Assertions.assertEquals(1, bRecords.size());
+        Assertions.assertEquals(1, cRecords.size());
+
+        Assertions.assertEquals(Performance.PUNCTUAL.grading, aRecords.get(0).getGrading());
+        Assertions.assertEquals(Performance.TIMEOUT.grading, bRecords.get(0).getGrading());
+        Assertions.assertEquals(Performance.TIMEOUT.grading, bRecords.get(0).getGrading());
+
+    }
+
+
+    @Transactional
+    @Test
+    void testMarketOverlate() {
+        MockDateService dateService = (MockDateService) this.dateService;
+        LocalDate deadline = dateService.currDate().plusDays(1);
+
+        final HashMap<String, MarketReport> mapForMarket =
+                mapForMarketReport(Arrays.asList("A", "B", "C"),
+                        Collections.singletonList("1"), deadline);
+
+
+        LocalDate dayBegin = dateService.currDate();
+        /* day20
+         */
+        dateService.skipDate(20);
+        /* day21
+         */
+        dateService.skipDate(1);
+        submitForReport(mapForMarket.get("A"), "1", 20);
+        /* day22
+         */
+        dateService.skipDate(1);
+        submitForReport(mapForMarket.get("B"), "1", 21);
+        /* day23
+         */
+        dateService.skipDate(1);
+        /* day40
+         */
+        dateService.skipDate(17);
+        submitForReport(mapForMarket.get("C"), "1", 19);
+        /* day41
+         */
+        dateService.skipDate(1);
+
+        final List<GradeRecord> aRecords = userService.getUser("A").getGradeRecords();
+        final List<GradeRecord> bRecords = userService.getUser("B").getGradeRecords();
+        final List<GradeRecord> cRecords = userService.getUser("C").getGradeRecords();
+
+        Assertions.assertEquals(1, aRecords.size());
+        Assertions.assertEquals(1, bRecords.size());
+        Assertions.assertEquals(1, cRecords.size());
+
+        Assertions.assertEquals(Performance.TIMEOUT.grading, aRecords.get(0).getGrading());
+        Assertions.assertEquals(Performance.OVERLATE.grading, bRecords.get(0).getGrading());
+        Assertions.assertEquals(Performance.OVERLATE.grading, cRecords.get(0).getGrading());
+
+    }
+
+    @Transactional
+    @Test
+    void testExpert() {
+        MockDateService dateService = (MockDateService) this.dateService;
+        LocalDate deadline = dateService.currDate().plusDays(2);
+
+        final HashMap<String, MarketReport> mapForExpert =
+                mapForExpertSubMarketReport(
+                        "EXP", Arrays.asList("A", "B"), Arrays.asList("1", "2"), deadline);
+        final User expert = userService.getUser("EXP");
+        final List<ExpertTask> expertTasks = taskService.getExpertTasks(false);
+        final ExpertTask task = expertTasks.get(0);
+        final ProductType type1 = productService.getByName("1");
+        final ProductType type2 = productService.getByName("2");
+
+        LocalDate dayBegin = dateService.currDate();
+        /* day0
+         */
+        dateService.skipDate(0);
+        submitForReport(mapForExpert.get("A"), "1", 5);
+        /* day1
+         */
+        dateService.skipDate(1);
+        submitForReport(mapForExpert.get("B"), "1", 5);
+        Assertions.assertEquals(10,
+                productService.getNumberOfUnqualifiedFromEntriesInTask(type1, task));
+        Assertions.assertEquals(0,
+                productService.getNumberOfUnqualifiedFromEntriesInTask(type2, task));
+        /* day2
+         */
+        dateService.skipDate(1);
+        submitForReport(mapForExpert.get("A"), "2", 5);
+        Assertions.assertEquals(5,
+                productService.getNumberOfUnqualifiedFromEntriesInTask(type2, task));
+        final List<ProductType> typeList = productService.getUncompletedProductTypesInTask(task);
+        Assertions.assertEquals(1, typeList.size());
+        Assertions.assertEquals(type2.getName(), typeList.get(0).getName());
+        /* day3
+         */
+        dateService.skipDate(1);
+        submitForReport(mapForExpert.get("B"), "2", 5);
+        final List<ExpertReport> reports = reportService.getExpertReports(expert);
+        Assertions.assertEquals(1, reports.size());
+        reportService.submitExpertReportOfId(reports.get(0).getId());
+        /* day4
+         */
+        dateService.skipDate(1);
+
+        final List<GradeRecord> eRecords = expert.getGradeRecords();
+
+        Assertions.assertEquals(1, eRecords.size());
+
+        Assertions.assertEquals(Performance.TIMEOUT.grading, eRecords.get(0).getGrading());
 
     }
 
