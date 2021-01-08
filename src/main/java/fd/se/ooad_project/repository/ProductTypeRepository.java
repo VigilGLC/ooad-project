@@ -41,7 +41,7 @@ public interface ProductTypeRepository extends CrudRepository<ProductType, Strin
                     "   and " +
                     "   entry.archived=false "
     )
-    public List<ProductType> findUncompletedProductTypesInTask(AuditTask task);
+    List<ProductType> findUncompletedProductTypesInTask(AuditTask task);
 
 
     @Query(value =
@@ -54,5 +54,5 @@ public interface ProductTypeRepository extends CrudRepository<ProductType, Strin
                     "   and " +
                     "   entry member of report.entries "
     )
-    int sumUnqualifiedInTask(ProductType productType, AuditTask task);
+    int sumUnqualifiedInTask(ProductType type, AuditTask task);
 }
