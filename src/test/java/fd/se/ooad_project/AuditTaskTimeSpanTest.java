@@ -2,6 +2,7 @@ package fd.se.ooad_project;
 
 
 import fd.se.ooad_project.entity.audit.AuditTask;
+import fd.se.ooad_project.entity.audit.ProductType;
 import fd.se.ooad_project.entity.consts.AuditTaskType;
 import fd.se.ooad_project.entity.consts.Role;
 import fd.se.ooad_project.entity.report.MarketReport;
@@ -10,6 +11,7 @@ import fd.se.ooad_project.pojo.request.MarketReportRequest;
 import fd.se.ooad_project.repository.report.MarketReportRepository;
 import fd.se.ooad_project.service.*;
 import fd.se.ooad_project.service.date.IDateService;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,10 +20,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.annotation.DirtiesContext;
 
 import java.time.LocalDate;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @AutoConfigureTestDatabase
@@ -114,6 +113,11 @@ public class AuditTaskTimeSpanTest {
          */
         reportService.submitExpertReportOfId(
                 reportService.getExpertReports(userService.getUser("expert")).get(0).getId());
+
+
+        Assertions.assertEquals(25,
+                numberOfUnqualified("A", dayBegin,dayBegin.plusDays(2)));
+
     }
 
 
@@ -168,6 +172,10 @@ public class AuditTaskTimeSpanTest {
         return map;
     }
 
+    private int numberOfUnqualified(String typeName, LocalDate from, LocalDate to) {
+        final ProductType type = productService.getByName(typeName);
+        return productService.getNumberOfUnqualifiedFromEntries(type, from, to);
+    }
 
     private void submitForReport(MarketReport report, String typeName, int unqualified) {
         final MarketReportRequest request = buildRequest(typeName, unqualified);

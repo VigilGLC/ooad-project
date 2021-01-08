@@ -23,9 +23,9 @@ public interface ProductInspectEntryRepository extends CrudRepository<ProductIns
                     "   and" +
                     "   entry.dateArchived>=:from " +
                     "   and " +
-                    "   entry.dateArchived<=:to "
+                    "   entry.dateArchived<:to "
     )
-    int sumUnqualifiedBetween(ProductType type, LocalDate from, LocalDate to);
+    Integer sumUnqualifiedBetween(ProductType type, LocalDate from, LocalDate to);
 
     @Query(value =
             "select sum(entry.unqualified) " +
