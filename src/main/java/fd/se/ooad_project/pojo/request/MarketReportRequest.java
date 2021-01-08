@@ -28,9 +28,11 @@ public class MarketReportRequest extends MereIdRequest {
         final Map<String, Integer> typeMap = this.entrySlims.stream().
                 collect(Collectors.toMap(e -> e.type, e -> e.unqualified));
         entries.forEach(entry -> {
-            entry.setUnqualified(typeMap.get(entry.getType().getName()));
-            entry.setArchived(true);
-            entry.setDateArchived(currDate);
+            if (typeMap.containsKey(entry.getType().getName())) {
+                entry.setUnqualified(typeMap.get(entry.getType().getName()));
+                entry.setArchived(true);
+                entry.setDateArchived(currDate);
+            }
         });
     }
 
