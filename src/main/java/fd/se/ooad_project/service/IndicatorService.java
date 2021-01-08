@@ -25,7 +25,7 @@ public class IndicatorService implements ApplicationListener<DateEvent> {
     private final MarketReportRepository marketReportRepository;
     private final ExpertReportRepository expertReportRepository;
 
-    private final IDateService dateService;
+    private IDateService dateService;
     private final GradingService gradingService;
 
     @Transactional
@@ -48,5 +48,9 @@ public class IndicatorService implements ApplicationListener<DateEvent> {
     public void onApplicationEvent(DateEvent event) {
         log.info("Date Event Received, start update grades. ");
         update();
+    }
+
+    public void setDateService(IDateService dateService) {
+        this.dateService = dateService;
     }
 }

@@ -30,10 +30,11 @@ public class GradingService {
         final LocalDate deadline = task.getDeadline();
         final LocalDate dateSubmit = report.getDateSubmit();
         final Performance performance = Performance.evaluate(deadline, dateSubmit);
-        final User user = getReportSubmitter(report);
+        User user = getReportSubmitter(report);
         final GradeRecord record = GradeRecord.
                 of(user, evaluateDetails(task, performance), performance.grading);
         record.setTask(task);
+        user = userRepository.save(user);
         user.getGradeRecords().add(record);
         userRepository.save(user);
     }
@@ -48,7 +49,7 @@ public class GradingService {
 
 
     private String evaluateDetails(AuditTask task, Performance performance) {
-        return MessageFormat.format("Task: {}, Cause: {}, Grading: {}",
+        return MessageFormat.format("Task: {0}, Cause: {1}, Grading: {2}",
                 task.getId(), performance.toString().toLowerCase(),
                 performance.grading);
     }

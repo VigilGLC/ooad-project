@@ -31,7 +31,7 @@ public class ReportService {
     private final ProductInspectEntryRepository entryRepository;
 
     private final TaskService taskService;
-    private final IDateService dateService;
+    private IDateService dateService;
 
     public List<MarketReport> getMarketReports(User market) {
         assert market.getRole() == Role.MARKET;
@@ -99,4 +99,7 @@ public class ReportService {
         return marketReportRepository.findMarketReportsOfExpertReport(id);
     }
 
+    public void setDateService(IDateService dateService) {
+        this.dateService = dateService;
+    }
 }

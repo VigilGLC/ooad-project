@@ -8,6 +8,7 @@ import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -23,6 +24,6 @@ public class User {
     @NonNull
     private Role role;
 
-    @OneToMany
+    @OneToMany(cascade = CascadeType.ALL)
     private List<GradeRecord> gradeRecords;
 }

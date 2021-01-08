@@ -2,6 +2,7 @@ package fd.se.ooad_project.service.date;
 
 
 import lombok.AllArgsConstructor;
+import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -14,6 +15,7 @@ import java.time.LocalDate;
 @Component
 @AllArgsConstructor
 @Slf4j
+@Getter
 public class SystemDateService implements IDateService {
 
     private final ApplicationEventPublisher publisher;

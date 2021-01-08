@@ -1,6 +1,7 @@
 package fd.se.ooad_project.repository.report;
 
 
+import fd.se.ooad_project.entity.audit.AuditTask;
 import fd.se.ooad_project.entity.consts.AuditTaskType;
 import fd.se.ooad_project.entity.report.MarketReport;
 import fd.se.ooad_project.entity.usr.User;
@@ -56,5 +57,6 @@ public interface MarketReportRepository extends CrudRepository<MarketReport, Int
     )
     int countUnsubmittedMarketReport(int marketTaskId);
 
+    MarketReport findByTaskAndMarketName(AuditTask task, String name);
 
 }

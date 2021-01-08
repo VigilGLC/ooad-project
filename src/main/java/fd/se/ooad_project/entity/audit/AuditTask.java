@@ -33,10 +33,10 @@ public class AuditTask {
 
     private boolean completed;
 
-    @OneToMany
+    @ManyToMany
     private List<ProductType> productTypes = new ArrayList<>();
 
-    @OneToMany
+    @ManyToMany
     private List<User> markets = new ArrayList<>();
 
 }

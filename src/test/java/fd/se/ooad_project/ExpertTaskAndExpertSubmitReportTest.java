@@ -96,15 +96,28 @@ public class ExpertTaskAndExpertSubmitReportTest {
         for (MarketReport marketReport : marketReports) {
             request.setId(marketReport.getId());
             reportService.submitMarketReportFromRequest(request);
-            Assertions.assertTrue(reportService.
-                    getMarketReportById(marketReport.getId()).isSubmitted());
+            marketReport = reportService.
+                    getMarketReportById(marketReport.getId());
+            Assertions.assertTrue(marketReport.isSubmitted());
         }
         report = reportService.getExpertReportById(report.getId());
-        marketReports = reportService.getExpertReportSubMarketReports(report.getId());
         Assertions.assertFalse(report.isSubmitted());
         Assertions.assertTrue(reportService.submitExpertReportOfId(report.getId()));
         report = reportService.getExpertReportById(report.getId());
         Assertions.assertTrue(report.isSubmitted());
+    }
+
+    @Test
+    public void testExpertTaskSubmitWithoutCompletion() {
+        final List<ExpertTask> expertTasks = taskService.getExpertTasks(false);
+        Assertions.assertEquals(1, expertTasks.size());
+        final User expert = userService.getUser(expertName);
+
+        final List<ExpertReport> expertReports = reportService.getExpertReports(expert);
+        Assertions.assertEquals(1, expertReports.size());
+        ExpertReport report = expertReports.get(0);
+
+        Assertions.assertFalse(reportService.submitExpertReportOfId(report.getId()));
     }
 
 }
