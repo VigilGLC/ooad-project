@@ -41,7 +41,7 @@ public interface MarketReportRepository extends CrudRepository<MarketReport, Int
                     "   and " +
                     "   expertReport.task=markertReport.task " +
                     "   and " +
-                    "   expertReport.submitted=false "
+                    "   markertReport.submitted=false "
     )
     int countUnsubmittedMarketReportsOfExpertReport(int expertReportId);
 
@@ -55,7 +55,6 @@ public interface MarketReportRepository extends CrudRepository<MarketReport, Int
                     "   marketReport.submitted=false "
     )
     int countUnsubmittedMarketReport(int marketTaskId);
-
 
 
 }
