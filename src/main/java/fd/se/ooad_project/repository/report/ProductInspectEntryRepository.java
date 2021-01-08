@@ -16,7 +16,7 @@ public interface ProductInspectEntryRepository extends CrudRepository<ProductIns
 
 
     @Query(value =
-            "select sum(entry.unqualified) " +
+            "select coalesce(sum(entry.unqualified),0) " +
                     "from ProductInspectEntry entry " +
                     "where " +
                     "   entry.type=:type " +
@@ -25,10 +25,10 @@ public interface ProductInspectEntryRepository extends CrudRepository<ProductIns
                     "   and " +
                     "   entry.dateArchived<:to "
     )
-    Integer sumUnqualifiedBetween(ProductType type, LocalDate from, LocalDate to);
+    int sumUnqualifiedBetween(ProductType type, LocalDate from, LocalDate to);
 
     @Query(value =
-            "select sum(entry.unqualified) " +
+            "select coalesce(sum(entry.unqualified),0) " +
                     "from ProductInspectEntry entry " +
                     "where " +
                     "   entry.report.task=:task " +

@@ -35,7 +35,7 @@ public interface MarketReportRepository extends CrudRepository<MarketReport, Int
     List<MarketReport> findMarketReportsOfExpertReport(int expertReportId);
 
     @Query(value =
-            "select count(markertReport) " +
+            "select coalesce(count(markertReport),0) " +
                     "from ExpertReport expertReport, MarketReport markertReport " +
                     "where " +
                     "   expertReport.id=:expertReportId" +
@@ -48,7 +48,7 @@ public interface MarketReportRepository extends CrudRepository<MarketReport, Int
 
     @Lock(OPTIMISTIC_FORCE_INCREMENT)
     @Query(value =
-            "select count(marketReport) " +
+            "select coalesce(count(marketReport),0) " +
                     "from MarketReport marketReport " +
                     "where " +
                     "   marketReport.task.id=:marketTaskId " +
