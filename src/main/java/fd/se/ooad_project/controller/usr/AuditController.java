@@ -148,5 +148,12 @@ public class AuditController {
         return ResponseEntity.ok(experts);
     }
 
+    @GetMapping("/users/market")
+    public ResponseEntity<?> allMarkets() {
+        final List<User> experts = userService.getUsers(Role.MARKET);
+        log.info("Audit {} get all markets. ", subject);
+        return ResponseEntity.ok(experts);
+    }
+
 
 }

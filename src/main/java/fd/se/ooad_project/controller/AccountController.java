@@ -23,7 +23,7 @@ public class AccountController {
     private final IDateService dateService;
 
     @PostMapping("/signUp")
-    public ResponseEntity<?> signIn(@RequestBody SignUpRequest request) {
+    public ResponseEntity<?> signUp(@RequestBody SignUpRequest request) {
         final boolean created =
                 userService.createUser(request.getName(), request.getRole());
         if (created) {
@@ -36,7 +36,7 @@ public class AccountController {
     }
 
     @PostMapping("/signIn")
-    public ResponseEntity<?> signIn(@RequestBody MereNameRequest request) {
+    public ResponseEntity<?> signUp(@RequestBody MereNameRequest request) {
         final String name = request.getName();
         final boolean exists = userService.existUser(name);
         if (exists) {
