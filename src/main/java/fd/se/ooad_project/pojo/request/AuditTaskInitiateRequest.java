@@ -14,6 +14,7 @@ public class AuditTaskInitiateRequest {
     private AuditTaskType auditTaskType;
     private String expert;
 
+    private String description;
 
     private LocalDate deadline;
 

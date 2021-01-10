@@ -58,6 +58,7 @@ public class TaskService {
             auditTask = expertTask;
         }
         auditTask.setType(auditTaskType);
+        auditTask.setDescription(request.getDescription());
         auditTask.setDeadline(request.getDeadline());
         auditTask.setMarkets(markets);
         auditTask.setProductTypes(productTypes);

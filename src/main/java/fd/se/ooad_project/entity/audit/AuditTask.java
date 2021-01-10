@@ -25,6 +25,8 @@ public class AuditTask {
     @Version
     private int version;
 
+    private String description;
+
     @Enumerated(EnumType.STRING)
     @NonNull
     private AuditTaskType type;
