@@ -156,7 +156,7 @@ public class AuditTaskTimeSpanTest {
         dateService.skipDate(0);
         submitForReport(mapForMarket.get("A"), "1", 20);
         final AuditTask task = mapForMarket.get("A").getTask();
-        final List<ProductType> typeList = productService.getUncompletedProductTypesInTask(task);
+        final List<ProductType> typeList = productService.getProductTypesInTask(task, false);
         Assertions.assertEquals(1, typeList.size());
         Assertions.assertEquals(0,
                 userService.getUser("A").getGradeRecords().size());
@@ -311,7 +311,7 @@ public class AuditTaskTimeSpanTest {
         submitForReport(mapForExpert.get("A"), "2", 5);
         Assertions.assertEquals(5,
                 productService.getNumberOfUnqualifiedFromEntriesInTask(type2, task));
-        final List<ProductType> typeList = productService.getUncompletedProductTypesInTask(task);
+        final List<ProductType> typeList = productService.getProductTypesInTask(task, false);
         Assertions.assertEquals(1, typeList.size());
         Assertions.assertEquals(type2.getName(), typeList.get(0).getName());
         /* day3

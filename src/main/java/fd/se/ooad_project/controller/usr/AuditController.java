@@ -99,12 +99,12 @@ public class AuditController {
         }
     }
 
-    @GetMapping("/auditTask/productTypes/uncompleted")
-    public ResponseEntity<?> uncompletedProductTypesForTask(@RequestParam int id) {
+    @GetMapping("/auditTask/productTypes")
+    public ResponseEntity<?> productTypesForTask(@RequestParam int id, @RequestParam boolean completed) {
         final AuditTask task = taskService.getById(id);
         if (task != null) {
             log.info("Audit {} get uncompleted product type in task {}. ", subject, id);
-            return ResponseEntity.ok(productService.getUncompletedProductTypesInTask(task));
+            return ResponseEntity.ok(productService.getProductTypesInTask(task, completed));
         } else {
             log.warn("Audit {} get not exist audit task {}. ", subject, id);
             return ResponseEntity.badRequest().build();

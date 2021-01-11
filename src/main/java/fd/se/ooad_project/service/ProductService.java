@@ -9,7 +9,10 @@ import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 
 @Service
@@ -33,7 +36,7 @@ public class ProductService {
         return productTypeRepository.findByName(typeName);
     }
 
-    public List<ProductType> getAll(){
+    public List<ProductType> getAll() {
         return productTypeRepository.findAll();
     }
 
@@ -41,8 +44,16 @@ public class ProductService {
         return entryRepository.sumUnqualifiedBetween(productType, from, to);
     }
 
-    public List<ProductType> getUncompletedProductTypesInTask(AuditTask task) {
-        return productTypeRepository.findUncompletedProductTypesInTask(task);
+    @Transactional
+    public List<ProductType> getProductTypesInTask(AuditTask task, boolean completed) {
+        final List<ProductType> uncompletedTypes = productTypeRepository.findUncompletedProductTypesInTask(task);
+        if (!completed) {
+            return uncompletedTypes;
+        } else {
+            final HashSet<ProductType> types = new HashSet<>(task.getProductTypes());
+            types.removeAll(uncompletedTypes);
+            return new ArrayList<>(types);
+        }
     }
 
     public int getNumberOfUnqualifiedFromEntriesInTask(ProductType productType, AuditTask task) {
