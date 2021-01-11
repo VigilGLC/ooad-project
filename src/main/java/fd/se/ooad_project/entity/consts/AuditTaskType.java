@@ -38,6 +38,6 @@ public enum AuditTaskType {
     @JsonValue
     @Override
     public String toString() {
-        return super.toString();
+        return this.value;
     }
 }
