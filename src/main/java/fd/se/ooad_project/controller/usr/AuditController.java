@@ -71,6 +71,18 @@ public class AuditController {
         return ResponseEntity.ok(response);
     }
 
+    @GetMapping("/auditTask")
+    public ResponseEntity<?> auditTask(@RequestParam int id) {
+        final AuditTask task = taskService.getById(id);
+        if (task != null) {
+            log.info("Audit {} get task {}. ", subject, id);
+            return ResponseEntity.ok(task);
+        } else {
+            log.warn("Audit {} not found task {}. ", subject, id);
+            return ResponseEntity.notFound().build();
+        }
+    }
+
     @GetMapping("/productType/unqualified")
     public ResponseEntity<?> unqualifiedNumberOfProductType(
             @RequestParam String typeName,
