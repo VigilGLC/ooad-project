@@ -46,7 +46,7 @@ public class ReportService {
     public boolean submitMarketReportFromRequest(MarketReportRequest request) {
         MarketReport report = getMarketReportById(request.getId());
         if (report.isSubmitted()) {
-            return false;
+            return true;
         }
         request.update(report.getEntries(), dateService.currDate());
         report = marketReportRepository.save(report);

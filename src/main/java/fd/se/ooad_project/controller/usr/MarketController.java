@@ -8,6 +8,7 @@ import fd.se.ooad_project.pojo.request.MarketReportRequest;
 import fd.se.ooad_project.service.ReportService;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -40,8 +41,8 @@ public class MarketController {
             log.info("Market {} submit market report {}. Success. ", subject, request.getId());
             return ResponseEntity.ok().build();
         } else {
-            log.warn("Market {} submit market report {}. Failed. ", subject, request.getId());
-            return ResponseEntity.badRequest().build();
+            log.info("Market {} create new entry in market report {}. Not Complete. ", subject, request.getId());
+            return ResponseEntity.status(HttpStatus.CREATED).build();
         }
     }
 
