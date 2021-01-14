@@ -25,7 +25,7 @@ public class SystemDateService implements IDateService {
         return LocalDate.now();
     }
 
-    @Scheduled(cron = "0 0 0 * * ?")
+    @Scheduled(cron = "0 1 0 * * ?")
     @Override
     public void trigger() {
         log.info("Date Event Triggered on {}", currDate());
