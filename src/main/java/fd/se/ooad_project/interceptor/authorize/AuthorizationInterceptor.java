@@ -35,8 +35,10 @@ public class AuthorizationInterceptor implements HandlerInterceptor {
         if (annotation != null) {
             final Role role = annotation.role();
             final User currUser = subject.getUser();
-            if (role != Role.ANY && currUser.getRole() != role) {
-                log.warn("User {} authority Intercepted.", currUser.getName());
+            if (currUser == null || (role != Role.ANY && currUser.getRole() != role)) {
+                if (currUser != null) {
+                    log.warn("User {} authority Intercepted.", currUser.getName());
+                }
                 response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
                 return false;
             }

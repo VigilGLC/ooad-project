@@ -17,8 +17,8 @@ public class OoadConfig implements WebMvcConfigurer {
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
         registry.addInterceptor(authenticationInterceptor).
-                excludePathPatterns("/user/signUp", "/user/signIn",
-                        "user/date", "/user/productTypes");
-        registry.addInterceptor(authorizationInterceptor);
+                addPathPatterns("/user/audit/**", "/user/market/**", "/user/market/**");
+        registry.addInterceptor(authorizationInterceptor).
+                addPathPatterns("/user/audit/**", "/user/market/**", "/user/market/**");
     }
 }
