@@ -23,7 +23,10 @@ public class AuthenticationInterceptor implements HandlerInterceptor {
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) {
         String header = request.getHeader(AUTHENTICATION_HEADER);
-        if (header == null) return false;
+        if (header == null) {
+            log.warn("Auth Header Empty.");
+            return false;
+        }
         header = header.trim();
         final User user = userService.getUser(header);
         if (user != null) {
