@@ -59,7 +59,7 @@ public class ExpertTaskAndExpertSubmitReportTest {
         request.setExpert(expertName);
         request.setMarkets(marketNames);
         request.setProductTypes(typeNames);
-        request.setDeadline(LocalDate.now());
+        request.setDeadline(LocalDate.of(2000,1,1));
 
         for (String typeName : typeNames) {
             productService.createProductType(typeName);
