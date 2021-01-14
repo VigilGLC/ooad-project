@@ -26,7 +26,7 @@ public class MockDateService implements IDateService {
         }
     }
 
-    public void skipDate(long days) {
+    public void skipDays(long days) {
         if (days <= 0) return;
         for (int i = 0; i < days; i++) {
             this.currDate = this.currDate.plusDays(1);

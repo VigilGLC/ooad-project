@@ -94,7 +94,7 @@ public class AuditTaskTimeSpanTest {
              market A: 1,5
              market C: 1,6
         */
-        dateService.skipDate(0);
+        dateService.skipDays(0);
         submitForReport(mapForMarket.get("A"), "1", 20);
         submitForReport(mapForMarket.get("A"), "2", 5);
         submitForReport(mapForMarket.get("B"), "2", 7);
@@ -104,25 +104,25 @@ public class AuditTaskTimeSpanTest {
            expert:
              market C: 3,5
         */
-        dateService.skipDate(1);
+        dateService.skipDays(1);
         submitForReport(mapForExpert.get("C"), "3", 5);
         /* day2
          */
-        dateService.skipDate(1);
+        dateService.skipDays(1);
         /* day3
            market B: 1,9
         */
-        dateService.skipDate(1);
+        dateService.skipDays(1);
         submitForReport(mapForMarket.get("B"), "1", 9);
         /* day4
            expert:
              market A: 3,25
         */
-        dateService.skipDate(1);
+        dateService.skipDays(1);
         submitForReport(mapForExpert.get("A"), "3", 25);
         /* day5
          */
-        dateService.skipDate(1);
+        dateService.skipDays(1);
         final ExpertReport expertReport =
                 reportService.getExpertReports(userService.getUser("expert")).get(0);
         reportService.submitExpertReportOfId(expertReport.getId());
@@ -153,7 +153,7 @@ public class AuditTaskTimeSpanTest {
         /* day0
            market A: 1,5
         */
-        dateService.skipDate(0);
+        dateService.skipDays(0);
         submitForReport(mapForMarket.get("A"), "1", 20);
         final AuditTask task = mapForMarket.get("A").getTask();
         final List<ProductType> typeList = productService.getProductTypesInTask(task, false);
@@ -163,13 +163,13 @@ public class AuditTaskTimeSpanTest {
         /* day1
            market B: 1,3
         */
-        dateService.skipDate(1);
+        dateService.skipDays(1);
         submitForReport(mapForMarket.get("B"), "1", 3);
         Assertions.assertEquals(1,
                 userService.getUser("A").getGradeRecords().size());
         /* day2
          */
-        dateService.skipDate(1);
+        dateService.skipDays(1);
         final List<GradeRecord> aRecords = userService.getUser("A").getGradeRecords();
         final List<GradeRecord> bRecords = userService.getUser("B").getGradeRecords();
         Assertions.assertEquals(1, aRecords.size());
@@ -192,22 +192,22 @@ public class AuditTaskTimeSpanTest {
         LocalDate dayBegin = dateService.currDate();
         /* day0
          */
-        dateService.skipDate(0);
+        dateService.skipDays(0);
         /* day1
          */
-        dateService.skipDate(1);
+        dateService.skipDays(1);
         submitForReport(mapForMarket.get("A"), "1", 20);
         /* day2
          */
-        dateService.skipDate(1);
+        dateService.skipDays(1);
         submitForReport(mapForMarket.get("B"), "1", 21);
         /* day20
          */
-        dateService.skipDate(18);
+        dateService.skipDays(18);
         submitForReport(mapForMarket.get("C"), "1", 22);
         /* day21
          */
-        dateService.skipDate(1);
+        dateService.skipDays(1);
 
         final List<GradeRecord> aRecords = userService.getUser("A").getGradeRecords();
         final List<GradeRecord> bRecords = userService.getUser("B").getGradeRecords();
@@ -238,25 +238,25 @@ public class AuditTaskTimeSpanTest {
         LocalDate dayBegin = dateService.currDate();
         /* day20
          */
-        dateService.skipDate(20);
+        dateService.skipDays(20);
         /* day21
          */
-        dateService.skipDate(1);
+        dateService.skipDays(1);
         submitForReport(mapForMarket.get("A"), "1", 20);
         /* day22
          */
-        dateService.skipDate(1);
+        dateService.skipDays(1);
         submitForReport(mapForMarket.get("B"), "1", 21);
         /* day23
          */
-        dateService.skipDate(1);
+        dateService.skipDays(1);
         /* day40
          */
-        dateService.skipDate(17);
+        dateService.skipDays(17);
         submitForReport(mapForMarket.get("C"), "1", 19);
         /* day41
          */
-        dateService.skipDate(1);
+        dateService.skipDays(1);
 
         final List<GradeRecord> aRecords = userService.getUser("A").getGradeRecords();
         final List<GradeRecord> bRecords = userService.getUser("B").getGradeRecords();
@@ -291,11 +291,11 @@ public class AuditTaskTimeSpanTest {
         LocalDate dayBegin = dateService.currDate();
         /* day0
          */
-        dateService.skipDate(0);
+        dateService.skipDays(0);
         submitForReport(mapForExpert.get("A"), "1", 5);
         /* day1
          */
-        dateService.skipDate(1);
+        dateService.skipDays(1);
         submitForReport(mapForExpert.get("B"), "1", 5);
         Assertions.assertEquals(10,
                 productService.getNumberOfUnqualifiedFromEntriesInTask(type1, task));
@@ -303,7 +303,7 @@ public class AuditTaskTimeSpanTest {
                 productService.getNumberOfUnqualifiedFromEntriesInTask(type2, task));
         /* day2
          */
-        dateService.skipDate(1);
+        dateService.skipDays(1);
         submitForReport(mapForExpert.get("A"), "2", 5);
         Assertions.assertEquals(5,
                 productService.getNumberOfUnqualifiedFromEntriesInTask(type2, task));
@@ -312,14 +312,14 @@ public class AuditTaskTimeSpanTest {
         Assertions.assertEquals(type2.getName(), typeList.get(0).getName());
         /* day3
          */
-        dateService.skipDate(1);
+        dateService.skipDays(1);
         submitForReport(mapForExpert.get("B"), "2", 5);
         final List<ExpertReport> reports = reportService.getExpertReports(expert);
         Assertions.assertEquals(1, reports.size());
         reportService.submitExpertReportOfId(reports.get(0).getId());
         /* day4
          */
-        dateService.skipDate(1);
+        dateService.skipDays(1);
 
         final List<GradeRecord> eRecords = expert.getGradeRecords();
 
@@ -348,22 +348,22 @@ public class AuditTaskTimeSpanTest {
         LocalDate dayBegin = dateService.currDate();
         /* day0
          */
-        dateService.skipDate(0);
+        dateService.skipDays(0);
         submitForReport(mapForMarketTask1.get("A"), "1", 5);
         /* day1
          */
-        dateService.skipDate(1);
+        dateService.skipDays(1);
         /* day2
          */
-        dateService.skipDate(1);
+        dateService.skipDays(1);
         submitForReport(mapForMarketTask2.get("A"), "1", 5);
         /* day 22
          */
-        dateService.skipDate(20);
+        dateService.skipDays(20);
         submitForReport(mapForMarketTask3.get("A"), "1", 5);
         /* day 23
          */
-        dateService.skipDate(1);
+        dateService.skipDays(1);
 
 
         Assertions.assertEquals(Performance.PUNCTUAL.grading +
@@ -391,31 +391,31 @@ public class AuditTaskTimeSpanTest {
         LocalDate dayBegin = dateService.currDate();
         /* day0
          */
-        dateService.skipDate(0);
+        dateService.skipDays(0);
         submitForReport(mapForExpertTask1.get("A"), "1", 5);
         final ExpertReport expertReport1 = expertReportFor("E", mapForExpertTask1);
         Assertions.assertNotNull(expertReport1);
         reportService.submitExpertReportOfId(expertReport1.getId());
         /* day1
          */
-        dateService.skipDate(1);
+        dateService.skipDays(1);
         /* day2
          */
-        dateService.skipDate(1);
+        dateService.skipDays(1);
         submitForReport(mapForExpertTask2.get("A"), "1", 5);
         final ExpertReport expertReport2 = expertReportFor("E", mapForExpertTask1);
         Assertions.assertNotNull(expertReport2);
         reportService.submitExpertReportOfId(expertReport2.getId());
         /* day 3
          */
-        dateService.skipDate(1);
+        dateService.skipDays(1);
         submitForReport(mapForExpertTask3.get("A"), "1", 5);
         final ExpertReport expertReport3 = expertReportFor("E", mapForExpertTask1);
         Assertions.assertNotNull(expertReport3);
         reportService.submitExpertReportOfId(expertReport3.getId());
         /* day 4
          */
-        dateService.skipDate(1);
+        dateService.skipDays(1);
 
         final User expert = userService.getUser("E");
         final List<GradeRecord> eRecords = expert.getGradeRecords();
