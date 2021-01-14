@@ -201,14 +201,9 @@ public class AuditTaskTimeSpanTest {
          */
         dateService.skipDate(1);
         submitForReport(mapForMarket.get("B"), "1", 21);
-        /*day3-19
-         */
-        for (int day = 3; day <= 19; day++) {
-            dateService.skipDate(1);
-        }
         /* day20
          */
-        dateService.skipDate(1);
+        dateService.skipDate(18);
         submitForReport(mapForMarket.get("C"), "1", 22);
         /* day21
          */
@@ -362,14 +357,9 @@ public class AuditTaskTimeSpanTest {
          */
         dateService.skipDate(1);
         submitForReport(mapForMarketTask2.get("A"), "1", 5);
-        /* day 3 - 21
-         */
-        for (int i = 3; i <= 21; i++) {
-            dateService.skipDate(1);
-        }
         /* day 22
          */
-        dateService.skipDate(1);
+        dateService.skipDate(20);
         submitForReport(mapForMarketTask3.get("A"), "1", 5);
         /* day 23
          */

@@ -28,8 +28,10 @@ public class MockDateService implements IDateService {
 
     public void skipDate(long days) {
         if (days <= 0) return;
-        this.currDate = this.currDate.plusDays(days);
-        trigger();
+        for (int i = 0; i < days; i++) {
+            this.currDate = this.currDate.plusDays(1);
+            trigger();
+        }
     }
 
 
