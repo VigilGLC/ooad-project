@@ -40,6 +40,6 @@ public enum Role {
     @JsonValue
     @Override
     public String toString() {
-        return super.toString();
+        return this.value;
     }
 }
