@@ -25,8 +25,18 @@ public interface UserRepository extends CrudRepository<User, String> {
                     "   and " +
                     "   report.submitted=false "
     )
-    public List<User> findUncompletedMarketsInTask(AuditTask task);
+    List<User> findUncompletedMarketsInTask(AuditTask task);
 
-    public List<User> findByRole(Role role);
+    List<User> findByRole(Role role);
+
+
+    @Query(value =
+            "select coalesce(sum(record.grading),0) " +
+                    "from GradeRecord record " +
+                    "where " +
+                    "   record.user=:user "
+    )
+    int gradesForUser(User user);
+
 
 }

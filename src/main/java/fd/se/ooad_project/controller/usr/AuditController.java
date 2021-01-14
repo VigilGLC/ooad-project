@@ -153,6 +153,22 @@ public class AuditController {
         }
     }
 
+
+    @Transactional
+    @GetMapping("/user/grades")
+    public ResponseEntity<?> gradesForUser(
+            @RequestParam String name) {
+        final User user = userService.getUser(name);
+        if (user != null) {
+            log.info("Audit {} get grades for user {}. ", subject, name);
+            return ResponseEntity.ok(userService.gradesOf(user));
+        } else {
+            log.warn("Audit {} get user {} not exists. ", subject, name);
+            return ResponseEntity.badRequest().build();
+        }
+    }
+
+
     @GetMapping("/users/expert")
     public ResponseEntity<?> allExperts() {
         final List<User> experts = userService.getUsers(Role.EXPERT);

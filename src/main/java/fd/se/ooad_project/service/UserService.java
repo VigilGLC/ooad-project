@@ -45,4 +45,9 @@ public class UserService {
     }
 
 
+    public int gradesOf(User user) {
+        return userRepository.gradesForUser(user);
+    }
+
+
 }

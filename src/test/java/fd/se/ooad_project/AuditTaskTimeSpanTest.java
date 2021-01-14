@@ -61,7 +61,7 @@ public class AuditTaskTimeSpanTest {
     void setUp() {
         final MockDateService mockDateService = new MockDateService();
         mockDateService.setPublisher(dateService.getPublisher());
-        mockDateService.setCurrDate(LocalDate.now());
+        mockDateService.setCurrDate(LocalDate.of(2000, 1, 1));
         reportService.setDateService(mockDateService);
         indicatorService.setDateService(mockDateService);
         dateService = mockDateService;
@@ -277,6 +277,7 @@ public class AuditTaskTimeSpanTest {
 
     }
 
+
     @Transactional
     @Test
     void testExpert() {
@@ -333,7 +334,110 @@ public class AuditTaskTimeSpanTest {
 
     }
 
+    @Test
+    @Transactional
+    void testMarketGrades() {
+        MockDateService dateService = (MockDateService) this.dateService;
+        LocalDate deadline = dateService.currDate().plusDays(1);
 
+        final HashMap<String, MarketReport> mapForMarketTask1 =
+                mapForMarketReport(Collections.singletonList("A"),
+                        Collections.singletonList("1"), deadline);
+        final HashMap<String, MarketReport> mapForMarketTask2 =
+                mapForMarketReport(Collections.singletonList("A"),
+                        Collections.singletonList("1"), deadline);
+        final HashMap<String, MarketReport> mapForMarketTask3 =
+                mapForMarketReport(Collections.singletonList("A"),
+                        Collections.singletonList("1"), deadline);
+
+        LocalDate dayBegin = dateService.currDate();
+        /* day0
+         */
+        dateService.skipDate(0);
+        submitForReport(mapForMarketTask1.get("A"), "1", 5);
+        /* day1
+         */
+        dateService.skipDate(1);
+        /* day2
+         */
+        dateService.skipDate(1);
+        submitForReport(mapForMarketTask2.get("A"), "1", 5);
+        /* day 3 - 21
+         */
+        for (int i = 3; i <= 21; i++) {
+            dateService.skipDate(1);
+        }
+        /* day 22
+         */
+        dateService.skipDate(1);
+        submitForReport(mapForMarketTask3.get("A"), "1", 5);
+        /* day 23
+         */
+        dateService.skipDate(1);
+
+
+        Assertions.assertEquals(Performance.PUNCTUAL.grading +
+                        Performance.TIMEOUT.grading + Performance.OVERLATE.grading,
+                userService.gradesOf(userService.getUser("A")));
+
+    }
+
+    @Test
+    @Transactional
+    void testExpertGrades() {
+        MockDateService dateService = (MockDateService) this.dateService;
+        LocalDate deadline = dateService.currDate().plusDays(1);
+
+        final HashMap<String, MarketReport> mapForExpertTask1 =
+                mapForExpertSubMarketReport("E", Collections.singletonList("A"),
+                        Collections.singletonList("1"), deadline);
+        final HashMap<String, MarketReport> mapForExpertTask2 =
+                mapForExpertSubMarketReport("E", Collections.singletonList("A"),
+                        Collections.singletonList("1"), deadline);
+        final HashMap<String, MarketReport> mapForExpertTask3 =
+                mapForExpertSubMarketReport("E", Collections.singletonList("A"),
+                        Collections.singletonList("1"), deadline);
+
+        LocalDate dayBegin = dateService.currDate();
+        /* day0
+         */
+        dateService.skipDate(0);
+        submitForReport(mapForExpertTask1.get("A"), "1", 5);
+        final ExpertReport expertReport1 = expertReportFor("E", mapForExpertTask1);
+        Assertions.assertNotNull(expertReport1);
+        reportService.submitExpertReportOfId(expertReport1.getId());
+        /* day1
+         */
+        dateService.skipDate(1);
+        /* day2
+         */
+        dateService.skipDate(1);
+        submitForReport(mapForExpertTask2.get("A"), "1", 5);
+        final ExpertReport expertReport2 = expertReportFor("E", mapForExpertTask1);
+        Assertions.assertNotNull(expertReport2);
+        reportService.submitExpertReportOfId(expertReport2.getId());
+        /* day 3
+         */
+        dateService.skipDate(1);
+        submitForReport(mapForExpertTask3.get("A"), "1", 5);
+        final ExpertReport expertReport3 = expertReportFor("E", mapForExpertTask1);
+        Assertions.assertNotNull(expertReport3);
+        reportService.submitExpertReportOfId(expertReport3.getId());
+        /* day 4
+         */
+        dateService.skipDate(1);
+
+        final User expert = userService.getUser("E");
+        final List<GradeRecord> eRecords = expert.getGradeRecords();
+        Assertions.assertEquals(3, eRecords.size());
+
+        Assertions.assertEquals(Performance.PUNCTUAL.grading +
+                        Performance.TIMEOUT.grading + Performance.TIMEOUT.grading,
+                userService.gradesOf(expert));
+
+    }
+
+    //region helper methods...
     private HashMap<String, MarketReport> mapForMarketReport(List<String> marketNames,
                                                              List<String> typeNames,
                                                              LocalDate deadline) {
@@ -396,6 +500,20 @@ public class AuditTaskTimeSpanTest {
         reportService.submitMarketReportFromRequest(request);
     }
 
+    @SuppressWarnings("SameParameterValue")
+    private ExpertReport expertReportFor(String expertName, HashMap<String, MarketReport> map) {
+        final User expert = userService.getUser(expertName);
+        final MarketReport report = map.values().iterator().next();
+        final int taskId = report.getTask().getId();
+        final List<ExpertReport> expertReports = reportService.getExpertReports(expert);
+        for (ExpertReport expertReport : expertReports) {
+            if (expertReport.getTask().getId() == taskId) {
+                return expertReport;
+            }
+        }
+        return null;
+    }
+
     private static MarketReportRequest buildRequest(String name, int unqualified) {
         final MarketReportRequest request = new MarketReportRequest();
         final MarketReportRequest.ProductInspectEntrySlim entrySlim =
@@ -403,6 +521,7 @@ public class AuditTaskTimeSpanTest {
         request.setEntrySlims(Collections.singletonList(entrySlim));
         return request;
     }
+    //endregion
 
 
 }
