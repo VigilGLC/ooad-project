@@ -34,6 +34,7 @@ public class GradingService {
         final GradeRecord record = GradeRecord.
                 of(user, evaluateDetails(task, performance), performance.grading);
         record.setTask(task);
+        user = userRepository.save(user);
         user.getGradeRecords().add(record);
         userRepository.save(user);
     }
