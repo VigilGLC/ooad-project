@@ -22,6 +22,9 @@ public interface MarketReportRepository extends CrudRepository<MarketReport, Int
 
     List<MarketReport> findByTaskTypeAndDateSubmit(AuditTaskType type, LocalDate date);
 
+    List<MarketReport> findByTaskTypeAndSubmittedTrueAndGradedFalse(AuditTaskType type);
+
+
     MarketReport findById(int id);
 
     @Query(value =

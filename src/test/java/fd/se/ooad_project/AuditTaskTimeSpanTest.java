@@ -63,7 +63,6 @@ public class AuditTaskTimeSpanTest {
         mockDateService.setPublisher(dateService.getPublisher());
         mockDateService.setCurrDate(LocalDate.of(2000, 1, 1));
         reportService.setDateService(mockDateService);
-        indicatorService.setDateService(mockDateService);
         dateService = mockDateService;
 
         userService.createUser(auditName, Role.AUDIT);
@@ -403,14 +402,14 @@ public class AuditTaskTimeSpanTest {
          */
         dateService.skipDays(1);
         submitForReport(mapForExpertTask2.get("A"), "1", 5);
-        final ExpertReport expertReport2 = expertReportFor("E", mapForExpertTask1);
+        final ExpertReport expertReport2 = expertReportFor("E", mapForExpertTask2);
         Assertions.assertNotNull(expertReport2);
         reportService.submitExpertReportOfId(expertReport2.getId());
         /* day 3
          */
         dateService.skipDays(1);
         submitForReport(mapForExpertTask3.get("A"), "1", 5);
-        final ExpertReport expertReport3 = expertReportFor("E", mapForExpertTask1);
+        final ExpertReport expertReport3 = expertReportFor("E", mapForExpertTask3);
         Assertions.assertNotNull(expertReport3);
         reportService.submitExpertReportOfId(expertReport3.getId());
         /* day 4
@@ -470,11 +469,11 @@ public class AuditTaskTimeSpanTest {
         marketTaskRequest.setDeadline(deadline);
         marketTaskRequest.setProductTypes(typeNames);
         marketTaskRequest.setMarkets(marketNames);
-        final AuditTask marketTask = taskService.createAuditTask(marketTaskRequest);
+        final AuditTask expertTask = taskService.createAuditTask(marketTaskRequest);
 
         final HashMap<String, MarketReport> map = new HashMap<>(marketNames.size());
         for (String marketName : marketNames) {
-            map.put(marketName, marketReportRepository.findByTaskAndMarketName(marketTask, marketName));
+            map.put(marketName, marketReportRepository.findByTaskAndMarketName(expertTask, marketName));
         }
         return map;
     }

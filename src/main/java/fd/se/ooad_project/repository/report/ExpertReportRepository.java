@@ -17,4 +17,6 @@ public interface ExpertReportRepository extends CrudRepository<ExpertReport, Int
 
     List<ExpertReport> findByDateSubmit(LocalDate date);
 
+    List<ExpertReport> findBySubmittedTrueAndGradedFalse();
+
 }

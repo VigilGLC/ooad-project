@@ -1,6 +1,7 @@
 package fd.se.ooad_project.entity.report;
 
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import fd.se.ooad_project.entity.audit.AuditTask;
 import lombok.Getter;
 import lombok.Setter;
@@ -23,4 +24,6 @@ public abstract class ReportBase {
 
     public abstract AuditTask getTask();
 
+    @JsonIgnore
+    private boolean graded;
 }
